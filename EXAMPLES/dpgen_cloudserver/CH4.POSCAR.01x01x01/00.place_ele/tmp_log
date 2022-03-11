@@ -1,0 +1,23 @@
+:: initializing oneAPI environment ...
+   BASH version = 5.0.17(1)-release
+:: debugger -- latest
+:: mkl -- latest
+:: intelpython -- latest
+:: clck -- latest
+:: dev-utilities -- latest
+:: ipp -- latest
+:: ippcp -- latest
+:: vtune -- latest
+:: itac -- latest
+:: dpcpp-ct -- latest
+:: advisor -- latest
+:: ccl -- latest
+:: tbb -- latest
+:: inspector -- latest
+:: dpl -- latest
+:: mpi -- latest
+:: dnnl -- latest
+:: compiler -- latest
+:: dal -- latest
+:: vpl -- latest
+:: oneAPI environment initialized ::
