@@ -1,0 +1,33 @@
+
+#!/bin/bash -l
+
+
+
+REMOTE_ROOT=$(pwd)
+echo 0 > $REMOTE_ROOT/222d597811229cc8ed3275df7606d858cd1f9a74_flag_if_job_task_fail
+test $? -ne 0 && exit 1
+
+
+
+***REMOVED*** source /opt/intel/oneapi/setvars.sh; ***REMOVED*** 
+
+
+
+
+cd $REMOTE_ROOT
+cd sys-0004-0001/scale-1.000/000027
+test $? -ne 0 && exit 1
+if [ ! -f 99da81a117b92fd7181a6645c65a30ebdadc2fe2_task_tag_finished ] ;then
+   ( mpirun -n 16 vasp_std ) 1>>fp.log 2>>fp.log 
+  if test $? -eq 0; then touch 99da81a117b92fd7181a6645c65a30ebdadc2fe2_task_tag_finished; else echo 1 > $REMOTE_ROOT/222d597811229cc8ed3275df7606d858cd1f9a74_flag_if_job_task_fail;fi
+fi &
+wait 
+
+
+cd $REMOTE_ROOT
+test $? -ne 0 && exit 1
+
+wait
+FLAG_IF_JOB_TASK_FAIL=$(cat 222d597811229cc8ed3275df7606d858cd1f9a74_flag_if_job_task_fail)
+if test $FLAG_IF_JOB_TASK_FAIL -eq 0; then touch 222d597811229cc8ed3275df7606d858cd1f9a74_job_tag_finished; else exit 1;fi
+
