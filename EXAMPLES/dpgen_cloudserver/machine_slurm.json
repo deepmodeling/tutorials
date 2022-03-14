@@ -1,0 +1,60 @@
+{
+    "train": [
+        {
+            "machine": {
+                "batch": "slurm",
+                "username": "Alice",
+                "hostname": "localhost",
+                "work_path": "/home/Alice/dpgen_work"
+            },
+            "resources": {
+                "numb_gpu": 1,
+                "numb_node": 1,
+                "partition": "partition_gpu",
+                "time_limit": "48:0:0"
+            },
+            "command": "dp",
+            "group_size": 4
+        }
+    ],
+  
+    "model_devi": [
+        {
+            "machine": {
+                "batch": "slurm",
+                "username": "Alice",
+                "hostname": "localhost",
+                "work_path": "/home/Alice/dpgen_work"
+            },
+            "resources": {
+                "numb_gpu": 1,
+                "numb_node": 1,
+                "partition": "partition_gpu",
+                "task_per_node": 8,
+                "time_limit": "48:0:0"
+            },
+            "command": "lmp",
+            "group_size": 4
+        }
+    ], 
+    
+    "fp": [
+        {
+            "machine": {
+                "batch": "slurm",
+                "username": "Alice",
+                "work_path": "/home/Alice/dpgen_work"
+            },
+            "resources": {
+                "partition": "partition_cpu",
+                "mark_failure": true,
+                "ratio_failed": 0.2,
+                "task_per_node": 64,
+                "with_mpi": true,
+                "module_list": ["openmpi/4.1.0"]
+            },
+            "command": "vasp_std",
+            "group_size": 1
+        }
+    ],
+}
