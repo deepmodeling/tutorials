@@ -1,0 +1,60 @@
+***REMOVED***
+    "train": [
+        ***REMOVED***
+            "machine": ***REMOVED***
+                "batch": "slurm",
+                "username": "Alice",
+                "hostname": "localhost",
+                "work_path": "/home/Alice/dpgen_work"
+***REMOVED***,
+            "resources": ***REMOVED***
+                "numb_gpu": 1,
+                "numb_node": 1,
+                "partition": "partition_gpu",
+                "time_limit": "48:0:0"
+***REMOVED***,
+      ***REMOVED***
+            "group_size": 4
+***REMOVED***
+  ***REMOVED***,
+  
+  ***REMOVED*** [
+        ***REMOVED***
+            "machine": ***REMOVED***
+                "batch": "slurm",
+                "username": "Alice",
+                "hostname": "localhost",
+                "work_path": "/home/Alice/dpgen_work"
+***REMOVED***,
+            "resources": ***REMOVED***
+                "numb_gpu": 1,
+                "numb_node": 1,
+                "partition": "partition_gpu",
+                "task_per_node": 8,
+                "time_limit": "48:0:0"
+***REMOVED***,
+            "command": "lmp",
+            "group_size": 4
+***REMOVED***
+  ***REMOVED***, 
+    
+  ***REMOVED*** [
+        ***REMOVED***
+            "machine": ***REMOVED***
+                "batch": "slurm",
+                "username": "Alice",
+                "work_path": "/home/Alice/dpgen_work"
+***REMOVED***,
+            "resources": ***REMOVED***
+                "partition": "partition_cpu",
+                "mark_failure": true,
+                "ratio_failed": 0.2,
+                "task_per_node": 64,
+                "with_mpi": true,
+                "module_list": ["openmpi/4.1.0"]
+***REMOVED***,
+            "command": "vasp_std",
+    ***REMOVED***
+***REMOVED***
+  ***REMOVED***,
+***REMOVED***
