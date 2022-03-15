@@ -70,7 +70,7 @@ to
 
 It is because that the directory to write to is `./data/` in the current directory. Here I'd like to introduce the definition of the data system. The DeePMD-kit considers that data with corresponding element types and atomic numbers form a system. Our data is generated from a molecular dynamics simulation and meets this condition, so we can put them into one system. Dpdata works the same way. If data cannot be put into a system, multiple systems is required to be set as a list here:
 ```json
- "training": ***REMOVED***
+ "training": {
         "systems": ["system1", "system2"]
 ```
 

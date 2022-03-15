@@ -1,4 +1,4 @@
-***REMOVED***
+{
     "stages":           [1,2,3,4],
     "cell_type":	"diamond",
     "super_cell":	[1, 1, 1],
@@ -17,4 +17,4 @@
     "deepgen_templ":	"../generator/template/",
     "coll_ndata":	5000,
     "_comment":		"that's all"
-***REMOVED***
+}

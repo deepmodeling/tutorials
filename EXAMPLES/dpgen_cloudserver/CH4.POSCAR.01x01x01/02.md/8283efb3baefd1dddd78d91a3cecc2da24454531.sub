@@ -9,7 +9,7 @@ test $? -ne 0 && exit 1
 
 
 
-***REMOVED*** source /opt/intel/oneapi/setvars.sh; ***REMOVED*** 
+{ source /opt/intel/oneapi/setvars.sh; } 
 
 
 
