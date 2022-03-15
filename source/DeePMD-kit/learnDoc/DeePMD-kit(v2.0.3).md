@@ -74,7 +74,7 @@ In the model section, the parameters of embedding and fitting networks are speci
     		"resnet_dt":		false,
     		"axis_neuron":		4,				# the size of the submatrix of G (embedding matrix)
 		"seed":			1,
-		"_comment":		"that's all"
+		"_comment":		"that's all"	
 		***REMOVED***,
 		"fitting_net":***REMOVED***
 			"neuron":	[100, 100, 100],		# size of the fitting neural network
