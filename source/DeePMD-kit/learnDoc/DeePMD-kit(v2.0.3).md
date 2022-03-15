@@ -63,7 +63,7 @@ where input.json gives you an example training script. The options are explained
 In the model section, the parameters of embedding and fitting networks are specified.
 
     "model":{
-	"type_map":		["H", "C"],				# the name of each type of atom
+	"type_map":		["H", "C"],					# the name of each type of atom
     	"descriptor":{
     		"type": 		"se_e2_a",  			# full relative coordinates are used
     		"rcut":  		6.00,				# cut-off radius
@@ -72,14 +72,14 @@ In the model section, the parameters of embedding and fitting networks are speci
     		"neuron":		[10, 20, 40],  			# size of the embedding neural network
     		"resnet_dt":		false,
     		"axis_neuron":		4,				# the size of the submatrix of G (embedding matrix)
-			"seed": 	1,
-			"_comment":	"that's all"
+			"seed": 		1,
+			"_comment":		"that's all"
 		},
 		"fitting_net":{
-			"neuron": 	[100, 100, 100],		# size of the fitting neural network
-			"resnet_dt":  	true,
-			"seed": 	1,
-			"_comment":	"that's all"
+			"neuron": 		[100, 100, 100],		# size of the fitting neural network
+			"resnet_dt":  		true,
+			"seed": 		1,
+			"_comment":		"that's all"
 		},
 		"_comment":	"that's all"'
 	},
