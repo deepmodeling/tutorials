@@ -1,4 +1,4 @@
-﻿# Hands-on tutorial for DeePMD-kit(v2.0.3)
+# Hands-on tutorial for DeePMD-kit(v2.0.3)
 This tutorial will introduce you to the basic usage of the DeePMD-kit, including data preparation, training/freezing/compressing, testing, and running molecular dynamics simulations with LAMMPS.
 Typically the DeePMD-kit workflow contains three parts: data preparation, training/freezing/compressing/testing, and molecular dynamics.
 The folder structure of this tutorial is like this:
@@ -54,7 +54,6 @@ where atom H is given type 0, and atom C is given type 1.
 ### Prepare input script 
 Once the data preparation is done, we can go on with training. Now go to the training directory
 
-
     $ cd ../01.train
     $ ls 
     input.json
@@ -64,23 +63,23 @@ where input.json gives you an example training script. The options are explained
 In the model section, the parameters of embedding and fitting networks are specified.
 
     "model":{
-	"type_map":		["H", "C"],				# the name of each type of atom
+	"type_map":		["H", "C"],						# the name of each type of atom
     	"descriptor":{
-    		"type": 		"se_e2_a",  			# full relative coordinates are used
-    		"rcut":  		6.00,				# cut-off radius
+    		"type": 			"se_e2_a",  		# full relative coordinates are used
+    		"rcut":  			6.00,				# cut-off radius
     		"rcut_smth": 		0.50, 				# where the smoothing starts
-    		"sel":			[4, 1], 			# the maximum number of type i atoms in the cut-off radius
-    		"neuron":		[10, 20, 40],  			# size of the embedding neural network
+    		"sel":				[4, 1], 			# the maximum number of type i atoms in the cut-off radius
+    		"neuron":			[10, 20, 40],  		# size of the embedding neural network
     		"resnet_dt":		false,
-    		"axis_neuron":		4,				# the size of the submatrix of G (embedding matrix)
-		"seed":			1,
-		"_comment":		"that's all"	
+    		"axis_neuron":		4,					# the size of the submatrix of G (embedding matrix)
+			"seed": 			1,
+			"_comment":			"that's all"
 		},
 		"fitting_net":{
-			"neuron":	[100, 100, 100],		# size of the fitting neural network
-			"resnet_dt":  	true,
-			"seed": 	1,
-			"_comment":	"that's all"
+			"neuron": 			[100, 100, 100],			# size of the fitting neural network
+			"resnet_dt":  		true,
+			"seed": 			1,
+			"_comment":			"that's all"
 		},
 		"_comment":	"that's all"'
 	},
@@ -90,43 +89,42 @@ The se\_e2\_a descriptor is used to train the DP model. The item neurons set the
 The following are the parameters that specify the learning rate and loss function.
 
 	"learning_rate" :{
-		"type":			"exp",
+		"type":				"exp",
 		"decay_steps":		5000,
-		"start_lr":		0.001,    
-		"stop_lr":		3.51e-8,
-		"_comment":		"that's all"
+		"start_lr":			0.001,    
+		"stop_lr":			3.51e-8,
+		"_comment":			"that's all"
 	},
 	"loss" :{
-		"type":			"ener",
+		"type":				"ener",
 		"start_pref_e":		0.02,
 		"limit_pref_e":		1,
 		"start_pref_f":		1000,
 		"limit_pref_f":		1,
 		"start_pref_v":		0,
 		"limit_pref_v":		0,
-		"_comment":		" that's all"
+		"_comment":			" that's all"
     },
-
 
 In the loss function, pref\_e increases from 0.02 to 1 $\mathrm{eV}^{-2}$, and pref\_f decreases from 1000 to 1 Å$^{2}$ $\mathrm{eV}^{-2}$ progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. pref_v is set to 0 $\mathrm{eV}^{-2}$, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively.
 The training parameters are given in the following
 
 	"training" : {
 		"training_data": {
-			"systems":           	["../00.data/data_0/",		# location of the training data
-						"../00.data/data_1/", 
-						"../00.data/data_2/"],
+			"systems":          ["../00.data/data_0/",	# location of the training data
+								"../00.data/data_1/", 
+								"../00.data/data_2/"],
 			"batch_size":		"auto",                       
-			"_comment":		"that's all"
+			"_comment":			"that's all"
 		},
 		"validation_data":{
-         		"systems":		["../00.data/data_3"],
-         		"batch_size":		"auto",				# automatically determined
-         		"numb_btch":		1,
-         		"_comment":		"that's all"
+			"systems":			["../00.data/data_3"],
+			"batch_size":		"auto",					# automatically determined
+			"numb_btch":		1,
+			"_comment":			"that's all"
 		},
-		"numb_steps":       		100000,				# Number of training batch             
-		"seed":				10,
+		"numb_steps":       	100000,					# Number of training batch             
+		"seed":					10,
 		"disp_file":			"lcurve.out",
 		"disp_freq":			1000,
 		"save_freq":			10000,
@@ -138,6 +136,7 @@ We reshaped the structure of the data, splitting them into a training data and a
 After the training script is prepared, we can start the training with DeePMD-kit by simply running
 
     $ dp train input.json
+
 On the screen, you see the information of the data system(s)
 
 	DEEPMD INFO      ----------------------------------------------------------------------------------------------------
@@ -170,6 +169,7 @@ If everything works fine, you will see, on the screen, information printed every
 	DEEPMD INFO    batch    9000 training time 6.72 s, testing time 0.01 s
 	DEEPMD INFO    batch   10000 training time 6.41 s, testing time 0.01 s
 	DEEPMD INFO    saved checkpoint model.ckpt
+
 They present the training and testing time counts. At the end of the 10000th batch, the model is saved in Tensorflow's checkpoint file model.ckpt. At the same time, the training and testing errors are presented in file lcurve.out.
 
 	$ head -n 2 lcurve.out
