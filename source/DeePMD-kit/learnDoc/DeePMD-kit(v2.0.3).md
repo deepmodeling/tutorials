@@ -174,7 +174,7 @@ They present the training and testing time counts. At the end of the 10000th bat
 
 	$ head -n 2 lcurve.out
 	#step       rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
-                0       1.34e+01       1.47e+01         7.05e-01         7.05e-01         4.22e-01         4.65e-01     1.00e-03
+	        0       1.34e+01       1.47e+01         7.05e-01         7.05e-01         4.22e-01         4.65e-01     1.00e-03
 
 and
 
