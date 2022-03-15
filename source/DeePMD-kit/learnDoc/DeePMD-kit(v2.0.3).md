@@ -268,3 +268,4 @@ After waiting for a while, the MD simulation finishes, and the log.lammps and ch
 	$ ovito ch4.dump
 
 to check the evolution of the molecular configuration.
+
