@@ -64,72 +64,72 @@ where input.json gives you an example training script. The options are explained
 In the model section, the parameters of embedding and fitting networks are specified.
 
     "model":***REMOVED***
-		"type_map":		["H", "C"],			# the name of each type of atom
+	"type_map":		["H", "C"],				# the name of each type of atom
     	"descriptor":***REMOVED***
-    		"type": 		"se_e2_a",  	# full relative coordinates are used
-    		"rcut":  		6.00,			# cut-off radius
-    		"rcut_smth": 	0.50, 			# where the smoothing starts
-    		"sel":			[4, 1], 		# the maximum number of type i atoms in the cut-off radius
-    		"neuron":		[10, 20, 40],  	# size of the embedding neural network
-    		"resnet_dt":	false,
-    		"axis_neuron":	4,				# the size of the submatrix of G (embedding matrix)
-			"seed": 		1,
-			"_comment":		"that's all"
+    		"type": 		"se_e2_a",  			# full relative coordinates are used
+    		"rcut":  		6.00,				# cut-off radius
+    		"rcut_smth": 		0.50, 				# where the smoothing starts
+    		"sel":			[4, 1], 			# the maximum number of type i atoms in the cut-off radius
+    		"neuron":		[10, 20, 40],  			# size of the embedding neural network
+    		"resnet_dt":		false,
+    		"axis_neuron":		4,				# the size of the submatrix of G (embedding matrix)
+		"seed": 		1,
+		"_comment":		"that's all"
 		***REMOVED***,
 		"fitting_net":***REMOVED***
-			"neuron": 		[100, 100, 100],# size of the fitting neural network
+			"neuron": 	[100, 100, 100],		# size of the fitting neural network
 			"resnet_dt":  	true,
-			"seed": 		1,
-			"_comment":		"that's all"
+			"seed": 	1,
+			"_comment":	"that's all"
 		***REMOVED***,
-		"_comment":		"that's all"'
+		"_comment":	"that's all"'
 	***REMOVED***,
 
 The se\_e2\_a descriptor is used to train the DP model. The item neurons set the size of the embedding and fitting network to [10, 20, 40] and [100, 100, 100], respectively. The components in $\tilde***REMOVED***\mathcal***REMOVED***R***REMOVED******REMOVED***^***REMOVED***i***REMOVED***$ to smoothly go to zero from 0.5 to 6 Å.
 
 The following are the parameters that specify the learning rate and loss function.
 
-    "learning_rate" :***REMOVED***
-		"type":				"exp",
+    	"learning_rate" :***REMOVED***
+		"type":			"exp",
 		"decay_steps":		5000,
-		"start_lr":			0.001,    
-		"stop_lr":			3.51e-8,
-		"_comment":			"that's all"
+		"start_lr":		0.001,    
+		"stop_lr":		3.51e-8,
+		"_comment":		"that's all"
 	***REMOVED***,
 	"loss" :***REMOVED***
-		"type":				"ener",
+		"type":			"ener",
 		"start_pref_e":		0.02,
 		"limit_pref_e":		1,
 		"start_pref_f":		1000,
 		"limit_pref_f":		1,
 		"start_pref_v":		0,
 		"limit_pref_v":		0,
-		"_comment":			" that's all"
+		"_comment":		" that's all"
 ***REMOVED***,
 
 
 In the loss function, pref\_e increases from 0.02 to 1 $\mathrm***REMOVED***eV***REMOVED***^***REMOVED***-2***REMOVED***$, and pref\_f decreases from 1000 to 1 Å$^***REMOVED***2***REMOVED***$ $\mathrm***REMOVED***eV***REMOVED***^***REMOVED***-2***REMOVED***$ progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. pref_v is set to 0 $\mathrm***REMOVED***eV***REMOVED***^***REMOVED***-2***REMOVED***$, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively.
 The training parameters are given in the following
 
-    "training" : ***REMOVED***
+	"training" : ***REMOVED***
 		"training_data": ***REMOVED***
-		"systems":           ["../00.data/data_0/",		# location of the training data
-                             "../00.data/data_1/", 
-                             "../00.data/data_2/"],
-		"batch_size":		"auto",                       
-		"_comment":			"that's all"
+			"systems":           	["../00.data/data_0/",		# location of the training data
+                             			"../00.data/data_1/", 
+                             			"../00.data/data_2/"],
+			"batch_size":		"auto",                       
+			"_comment":		"that's all"
 		***REMOVED***,
 		"validation_data":***REMOVED***
-         	"systems":		["../00.data/data_3"],
-         	"batch_size":	"auto",						# automatically determined
-         	"numb_btch":	1,
-         	"_comment":		"that's all"
+         		"systems":		["../00.data/data_3"],
+         		"batch_size":		"auto",				# automatically determined
+         		"numb_btch":		1,
+         		"_comment":		"that's all"
 		***REMOVED***,
-		"numb_steps":       100000,						# Number of training batch             
+		"numb_steps":       		100000,				# Number of training batch             
 		"seed":				10,
-		"disp_file":		"lcurve.out",
-		"disp_freq":		1000,
-		"save_freq":		10000,
+		"disp_file":			"lcurve.out",
+		"disp_freq":			1000,
+		"save_freq":			10000,
 	***REMOVED***,
 
 We reshaped the structure of the data, splitting them into a training data and a validation data. The training data has 3 systems and validation data has 1 system. The model is trained for $10^6$ steps.
@@ -174,7 +174,7 @@ They present the training and testing time counts. At the end of the 10000th bat
 
 	$ head -n 2 lcurve.out
 	#step       rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
-        0       1.34e+01       1.47e+01         7.05e-01         7.05e-01         4.22e-01         4.65e-01     1.00e-03
+                0       1.34e+01       1.47e+01         7.05e-01         7.05e-01         4.22e-01         4.65e-01     1.00e-03
 
 and
 
@@ -230,11 +230,11 @@ We can check the quality of the trained model by running
 On the screen you see the information of the prediction errors of validation data.
 
 	DEEPMD INFO    # number of test data	: 40 
-	DEEPMD INFO    Energy RMSE				: 3.168050e-03 eV
-	DEEPMD INFO    Energy RMSE/Natoms		: 6.336099e-04 eV
-	DEEPMD INFO    Force  RMSE				: 1.267645e-01 eV/A
-	DEEPMD INFO    Virial RMSE				: 2.494163e-01 eV
-	DEEPMD INFO    Virial RMSE/Natoms		: 4.988326e-02 eV
+	DEEPMD INFO    Energy RMSE		: 3.168050e-03 eV
+	DEEPMD INFO    Energy RMSE/Natoms	: 6.336099e-04 eV
+	DEEPMD INFO    Force  RMSE		: 1.267645e-01 eV/A
+	DEEPMD INFO    Virial RMSE		: 2.494163e-01 eV
+	DEEPMD INFO    Virial RMSE/Natoms	: 4.988326e-02 eV
 	DEEPMD INFO    # ----------------------------------------------- 
 
 ## Run MD with LAMMPS 
