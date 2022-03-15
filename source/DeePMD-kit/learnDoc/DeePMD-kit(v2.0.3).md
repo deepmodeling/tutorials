@@ -5,6 +5,7 @@ The folder structure of this tutorial is like this:
 
     $ ls
     00.data 01.train 02.lmp
+
 where the folder 00.data contains the data, the folder 01.train contains an example input script to train a model with DeePMD-kit, and the folder 02.lmp contains LAMMPS example script for molecular dynamics simulation.
 
 ## Data preparation
@@ -19,9 +20,11 @@ As an example, go to the data folder:
     $ cd data
     $ ls 
     OUTCAR
+
 The OUTCAR was produced by an ab-initio molecular dynamics (AIMD) simulation of a gas phase methane molecule using VASP. Now start an interactive python environment, for example
 
     $ python
+
 then execute the following commands:
 
     import dpdata 
@@ -29,10 +32,12 @@ then execute the following commands:
     sys = dpdata.LabeledSystem('OUTCAR', fmt = 'vasp/outcar') 
     print('# the system contains %d frames' % sys.get_nframes()) 
     sys.to_deepmd_npy('00.data', set_size = 40, prec = np.float32)
+
 The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The output folder 00.data.
 
     $ ls 00.data
     set.000 set.001 set.002 set.003 set.004 type.raw type_map.raw
+
 The data system that has 200 frames is split into 5 sets, each of which has 40 frames. The parameter set_size specifies the set size. The parameter prec specifies the precision of the floating point number.
 
     $ cat 00.data/type.raw 
@@ -42,6 +47,7 @@ Since all frames in the system have the same atom types and atom numbers, we onl
 
     $ cat 00.data/type_map.raw 
     0 0 0 0 1
+
 where atom H is given type 0, and atom C is given type 1.
 
 ## Training
@@ -52,11 +58,10 @@ Once the data preparation is done, we can go on with training. Now go to the tra
     $ cd ../01.train
     $ ls 
     input.json
+
 where input.json gives you an example training script. The options are explained in detail in the DeePMD-kit manual, so they are not comprehensively explained. 
 
 In the model section, the parameters of embedding and fitting networks are specified.
-
-
 
     "model":{
 		"type_map":		["H", "C"],			# the name of each type of atom
@@ -83,7 +88,6 @@ In the model section, the parameters of embedding and fitting networks are speci
 The se\_e2\_a descriptor is used to train the DP model. The item neurons set the size of the embedding and fitting network to [10, 20, 40] and [100, 100, 100], respectively. The components in $\tilde{\mathcal{R}}^{i}$ to smoothly go to zero from 0.5 to 6 Å.
 
 The following are the parameters that specify the learning rate and loss function.
-
 
     "learning_rate" :{
 		"type":				"exp",
@@ -135,7 +139,6 @@ After the training script is prepared, we can start the training with DeePMD-kit
 
     $ dp train input.json
 On the screen, you see the information of the data system(s)
-
 
 	DEEPMD INFO      ----------------------------------------------------------------------------------------------------
 	DEEPMD INFO      ---Summary of DataSystem: training     -------------------------------------------------------------
@@ -202,6 +205,7 @@ At the end of the training, the model parameters saved in TensorFlow's checkpoin
 	$ dp freeze -o graph.pb
 	DEEPMD INFO    Restoring parameters from ./model.ckpt-1000000
 	DEEPMD INFO    1264 ops in the final graph
+
 and it will output a model file named graph.pb in the current directory. The graph.pb can be compressed in the following way:
 
 	$ dp compress -i graph.pb -o graph-compress.pb
