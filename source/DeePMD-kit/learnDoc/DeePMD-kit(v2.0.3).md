@@ -89,7 +89,7 @@ The se\_e2\_a descriptor is used to train the DP model. The item neurons set the
 
 The following are the parameters that specify the learning rate and loss function.
 
-    	"learning_rate" :***REMOVED***
+	"learning_rate" :***REMOVED***
 		"type":			"exp",
 		"decay_steps":		5000,
 		"start_lr":		0.001,    
@@ -114,8 +114,8 @@ The training parameters are given in the following
 	"training" : ***REMOVED***
 		"training_data": ***REMOVED***
 			"systems":           	["../00.data/data_0/",		# location of the training data
-                             			"../00.data/data_1/", 
-                             			"../00.data/data_2/"],
+						"../00.data/data_1/", 
+						"../00.data/data_2/"],
 			"batch_size":		"auto",                       
 			"_comment":		"that's all"
 		***REMOVED***,
