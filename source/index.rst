@@ -14,13 +14,13 @@ Tutorials:
 ---------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: DeePMD-kit
 
    DeePMD-kit/index
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: DP-GEN
 
    DP-GEN/index
