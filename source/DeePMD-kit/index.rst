@@ -21,5 +21,5 @@ DeePMD-kit Tutorial
 	:maxdepth: 2
 	:caption: Learn DeePMD-kit
 
-	learnDoc/learn1
-	learnDoc/learn2
+	learnDoc/Theory
+	learnDoc/Handson-Tutorial(v2.0.3)
