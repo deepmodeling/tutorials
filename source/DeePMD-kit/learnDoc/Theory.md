@@ -30,7 +30,7 @@ here <img src="http://chart.googleapis.com/chart?cht=tx&chl= r_{j i}" style="bor
 
 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathcal{D}^{i}=\left(\mathcal{G}^{i&space;1}\right)^{T}&space;\tilde{\mathcal{R}}^{i}\left(\tilde{\mathcal{R}}^{i}\right)^{T}&space;\mathcal{G}^{i&space;2},(7)">
 
-In Eq.~\ref{eq:feature_matrix}, translational and rotational symmetries are preserved by the matrix product of <img src="https://latex.codecogs.com/png.image?\dpi{110}\tilde{\mathcal{R}}^{i}\left(\tilde{\mathcal{R}}^{i}\right)^{T}">, and permutational symmetry is preserved by the matrix product of <img src="https://latex.codecogs.com/png.image?\dpi{110}\left(\mathcal{G}^{i}\right)^{T}&space;\tilde{\mathcal{R}}^{i}">.
+In feature_matrix, translational and rotational symmetries are preserved by the matrix product of <img src="https://latex.codecogs.com/png.image?\dpi{110}\tilde{\mathcal{R}}^{i}\left(\tilde{\mathcal{R}}^{i}\right)^{T}">, and permutational symmetry is preserved by the matrix product of <img src="https://latex.codecogs.com/png.image?\dpi{110}\left(\mathcal{G}^{i}\right)^{T}&space;\tilde{\mathcal{R}}^{i}">.
 
 Next, each <img src="http://chart.googleapis.com/chart?cht=tx&chl= \mathcal{D}^{i}" style="border:none;"> is mapped to a local atomic energy <img src="http://chart.googleapis.com/chart?cht=tx&chl= E_{i}" style="border:none;"> through a fitting network. The fitting network is a feedforward neural network containing several hidden layers. The parameters contained in the embedding and fitting networks are obtained by minimizing the loss function L:
 
