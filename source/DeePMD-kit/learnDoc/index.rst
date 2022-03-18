@@ -9,5 +9,5 @@ Welcome to learn DeePMD-kit!
 	:maxdepth: 2
 	:caption: Learn DeePMD-kit
 
-	learn1
-	learn2
+	Theory
+	Handson-Tutorial(v2.0.3)
