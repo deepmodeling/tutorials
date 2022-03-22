@@ -32,7 +32,8 @@ release = '0.1'
 # ones.
 extensions = [
         'recommonmark',
-        'sphinx_markdown_tables'
+        'sphinx_markdown_tables',
+        'deepmodeling_sphinx',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
