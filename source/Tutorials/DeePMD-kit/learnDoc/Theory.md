@@ -1,6 +1,6 @@
 # Theory
 
-Before introducing the DP method, we define the coordinate matrix <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}&space;\in&space;\mathbb{R}^{N&space;\times&space;3}"> of a system containing <img src="https://latex.codecogs.com/png.image?\dpi{110}N"> atoms,
+Before introducing the DP method, we define the coordinate matrix $\boldsymbol{\mathcal{R}} \in \mathbb{R}^{N \times 3}$ of a system containing <img src="https://latex.codecogs.com/png.image?\dpi{110}N"> atoms,
 
 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathcal{R}=\left\{\boldsymbol{r}_{1}^{T},&space;\cdots,&space;\boldsymbol{r}_{i}^{T},&space;\cdots,&space;\boldsymbol{r}_{N}^{T}\right\}^{T},&space;\boldsymbol{r}_{i}=\left(x_{i},&space;y_{i},&space;z_{i}\right),(1)">
 
