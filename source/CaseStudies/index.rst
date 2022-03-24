@@ -14,4 +14,6 @@ Case Studies:
    :maxdepth: 2
    :caption: Gas-pahse systems
 
-   Examples/methane
+
+
+   Gas-phase/index
