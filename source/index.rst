@@ -10,20 +10,31 @@ Welcome to DeepModeling Tutorial!
 Hi everyone, here are the tutorials for DeepModeling Projects.
 
 
-Tutorials:
----------------
+.. toctree::
+   :maxdepth: 3
+   :caption: Getting Started
+
+   Tutorials/index
 
 .. toctree::
-   :maxdepth: 4
-   :caption: DeePMD-kit
+   :maxdepth: 3
+   :caption: Case Studies
 
-   DeePMD-kit/index
+   CaseStudies/index
 
 .. toctree::
-   :maxdepth: 4
-   :caption: DP-GEN
+   :maxdepth: 3
+   :caption: Resources
 
-   DP-GEN/index
+   Resources/index
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Q & A
+
+   QA/index
+
+
 
 
 Working Now:
