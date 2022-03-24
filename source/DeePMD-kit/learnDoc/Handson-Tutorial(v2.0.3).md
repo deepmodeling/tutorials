@@ -1,6 +1,9 @@
 # Hands-on tutorial for DeePMD-kit(v2.0.3)
-This tutorial will introduce you to the basic usage of the DeePMD-kit, including data preparation, training/freezing/compressing, testing, and running molecular dynamics simulations with LAMMPS.
-Typically the DeePMD-kit workflow contains three parts: data preparation, training/freezing/compressing/testing, and molecular dynamics.
+This tutorial will introduce you to the basic usage of the DeePMD-kit, taking a gas phase methane molecule as an example. Typically the DeePMD-kit workflow contains three parts: data preparation, training/freezing/compressing/testing, and molecular dynamics.
+
+The DP model is generated using the DeePMD-kit package (v2.1.0). The training data is converted into the format of DeePMD-kit using a tool named dpdata (v0.2.5). It needs to be noted that dpdata only works with Python 3.5 and later versions. The MD simulations are carried out using LAMMPS (29 Sep 2021) integrated with DeePMD-kit. Details of dpdata and DeePMD-kit installation and execution of can be found in the DeepModeling official GitHub site(https://github.com/deepmodeling/).
+OVITO is used for the visualization of the MD trajectory.
+
 The folder structure of this tutorial is like this:
 
     $ ls
@@ -13,7 +16,7 @@ The training data of the DeePMD-kit contains the atom type, the simulation box, 
 
 The DeePMD-kit adopts a compressed data format. All training data should first be converted into this format and can then be used by DeePMD-kit. The data format is explained in detail in the DeePMD-kit manual that can be found in the DeePMD-kit official Github site http://www.github.com/deepmodeling/deepmd-kit.
 
-We provide a convenient tool named dpdata for converting the data produced by VASP, Gaussian, Quantum-Espresso, ABACUS, and LAMMPS into the compressed format of DeePMD-kit. It needs to be noted that dpdata only works with python 3.x. 
+We provide a convenient tool named dpdata for converting the data produced by VASP, Gaussian, Quantum-Espresso, ABACUS, and LAMMPS into the compressed format of DeePMD-kit.
 
 As an example, go to the data folder:
 
@@ -29,19 +32,26 @@ then execute the following commands:
 
     import dpdata 
     import numpy as np
-    sys = dpdata.LabeledSystem('OUTCAR', fmt = 'vasp/outcar') 
-    print('# the system contains %d frames' % sys.get_nframes()) 
-    sys.to_deepmd_npy('00.data', set_size = 40, prec = np.float32)
+    data = dpdata.LabeledSystem('OUTCAR', fmt = 'vasp/outcar') 
+    print('# the data contains %d frames' % len(data))
 
-The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The output folder 00.data.
+On the screen, you can see that the OUTCAR file contains 200 frames of data. We randomly pick 40 frames as validation data and the rest as training data. The parameter set\_size specifies the set size. The parameter prec specifies the precision of the floating point number.
 
-    $ ls 00.data
-    set.000 set.001 set.002 set.003 set.004 type.raw type_map.raw
+	index_validation = np.random.choice(200,size=40,replace=False)
+	index_training = list(set(range(200))-set(index_validation))
+	data_training = data.sub_system(index_training)
+	data_validation = data.sub_system(index_validation)
+	data_training.to_deepmd_npy('00.data/training_data')
+	data_validation.to_deepmd_npy('00.data/validation_data')
+	print('# the training data contains %d frames' % len(data_training)) 
+	print('# the validation data contains %d frames' % len(data_validation)) 
 
-The data system that has 200 frames is split into 5 sets, each of which has 40 frames. The parameter set_size specifies the set size. The parameter prec specifies the precision of the floating point number.
+The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The data in DeePMD-kit format is stored in the folder 00.data..
 
-    $ cat 00.data/type.raw 
-    H C
+	$ ls 00.data/training_data
+	set.000 type.raw type_map.raw
+	$ cat 00.data/training_data/type.raw 
+	H C
 
 Since all frames in the system have the same atom types and atom numbers, we only need to specify the type information once for the whole system
 
@@ -106,31 +116,29 @@ The following are the parameters that specify the learning rate and loss functio
 		"_comment":		" that's all"
     },
 
-In the loss function, pref\_e increases from 0.02 to 1 $\mathrm{eV}^{-2}$, and pref\_f decreases from 1000 to 1 Å$^{2}$ $\mathrm{eV}^{-2}$ progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. pref_v is set to 0 $\mathrm{eV}^{-2}$, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively.
+In the loss function, pref\_e increases from 0.02 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, and pref\_f decreases from 1000 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\AA^{2}&space;\mathrm{eV}^{-2}"> progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. pref_v is set to 0 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively.
 The training parameters are given in the following
 
 	"training" : {
 		"training_data": {
-			"systems":          	["../00.data/data_0/",		# location of the training data
-						"../00.data/data_1/", 
-						"../00.data/data_2/"],
+			"systems":          	["../00.data/training_data"],		
 			"batch_size":		"auto",                       
 			"_comment":		"that's all"
 		},
 		"validation_data":{
-			"systems":		["../00.data/data_3"],
-			"batch_size":		"auto",				# automatically determined
+			"systems":		["../00.data/validation_data/"],
+			"batch_size":		"auto",				
 			"numb_btch":		1,
 			"_comment":		"that's all"
 		},
-		"numb_steps":       		100000,				# Number of training batch             
+		"numb_steps":       		100000,				            
 		"seed":				10,
 		"disp_file":			"lcurve.out",
 		"disp_freq":			1000,
 		"save_freq":			10000,
 	},
 
-We reshaped the structure of the data, splitting them into a training data and a validation data. The training data has 3 systems and validation data has 1 system. The model is trained for $10^6$ steps.
+The model is trained for <img src="https://latex.codecogs.com/png.image?\dpi{110}10^6"> steps.
 
 ### Train a model 
 After the training script is prepared, we can start the training with DeePMD-kit by simply running
@@ -141,16 +149,14 @@ On the screen, you see the information of the data system(s)
 
 	DEEPMD INFO      ----------------------------------------------------------------------------------------------------
 	DEEPMD INFO      ---Summary of DataSystem: training     -------------------------------------------------------------
-	DEEPMD INFO      found 3 system(s):
+	DEEPMD INFO      found 1 system(s):
 	DEEPMD INFO                              system        natoms        bch_sz        n_bch          prob        pbc
-	DEEPMD INFO                  ../00.data/data_0/             5             7            5         0.250          T
-	DEEPMD INFO                  ../00.data/data_1/             5             7           10         0.500          T
-	DEEPMD INFO                  ../00.data/data_2/             5             7            5         0.250          T
+	DEEPMD INFO           ../00.data/training_data/             5             7           22         1.000          T
 	DEEPMD INFO      -----------------------------------------------------------------------------------------------------
 	DEEPMD INFO      ---Summary of DataSystem: validation   --------------------------------------------------------------
 	DEEPMD INFO      found 1 system(s):
-	DEEPMD INFO                               system        natoms        bch_sz        n_bch          prob        pbc
-	DEEPMD INFO                   ../00.data/data_3/             5             7            5         1.000          T
+	DEEPMD INFO                               system       natoms        bch_sz        n_bch          prob        pbc
+	DEEPMD INFO          ../00.data/validation_data/            5             7            5         1.000          T
 
 and the starting and final learning rate of this training
 
@@ -206,7 +212,8 @@ At the end of the training, the model parameters saved in TensorFlow's checkpoin
 	DEEPMD INFO    Restoring parameters from ./model.ckpt-1000000
 	DEEPMD INFO    1264 ops in the final graph
 
-and it will output a model file named graph.pb in the current directory. The graph.pb can be compressed in the following way:
+and it will output a model file named graph.pb in the current directory. 
+The compressed DP model typically speed up DP-based calculations by an order of magnitude faster, and consume an order of magnitude less memory. The graph.pb can be compressed in the following way:
 
 	$ dp compress -i graph.pb -o graph-compress.pb
 	DEEPMD INFO    stage 1: compress the model
@@ -225,7 +232,7 @@ and it will output a model file named graph-compress.pb.
 ### Test a model 
 We can check the quality of the trained model by running
 
-	$ dp test -m graph-compress.pb -s ../00.data/data_3 -n 40
+	$ dp test -m graph-compress.pb -s ../00.data/validation_data -n 40
 
 On the screen you see the information of the prediction errors of validation data.
 
@@ -263,7 +270,7 @@ One may execute lammps in the standard way
 
 	$ lmp  -i  in.lammps
 
-After waiting for a while, the MD simulation finishes, and the log.lammps and ch4.dump files are generated. They store thermodynamic information and the trajectory of the molecule, respectively. One may want to visualize the trajectory by, e.g. ovito
+After waiting for a while, the MD simulation finishes, and the log.lammps and ch4.dump files are generated. They store thermodynamic information and the trajectory of the molecule, respectively. One may want to visualize the trajectory by, e.g. OVITO
 
 	$ ovito ch4.dump
 
