@@ -10,6 +10,13 @@ This tutorial tell you how to use DeePMD-kit，for detail information, you can c
 	:maxdepth: 2
 	:caption:  Introduction
 
+	learnDoc/Introduction
+
+.. toctree::
+	:maxdepth: 2
+	:caption:  Easy Install
+
+	learnDoc/Installation
 
 .. toctree::
 	:maxdepth: 2
