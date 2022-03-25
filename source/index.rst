@@ -11,16 +11,19 @@ Hi everyone, here are the tutorials for DeepModeling Projects.
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
+   :numbered:
    :caption: Getting Started
 
-   Tutorials/index
+   Tutorials/DeePMD-kit/index
+   Tutorials/DP-GEN/index
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
+   :numbered:
    :caption: Case Studies
 
-   CaseStudies/index
+   CaseStudies/Gas-phase/index
 
 .. toctree::
    :maxdepth: 3
