@@ -31,9 +31,11 @@ release = '0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-        'recommonmark',
-        'sphinx_markdown_tables',
+        'myst_parser',
         'deepmodeling_sphinx',
+]
+myst_enable_extensions = [
+    'dollarmath',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
