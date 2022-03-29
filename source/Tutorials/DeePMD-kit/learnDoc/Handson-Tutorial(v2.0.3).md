@@ -4,8 +4,7 @@ This tutorial will introduce you to the basic usage of the DeePMD-kit, taking a 
 The DP model is generated using the DeePMD-kit package (v2.0.3). The training data is converted into the format of DeePMD-kit using a tool named dpdata (v0.2.5). It needs to be noted that dpdata only works with Python 3.5 and later versions. The MD simulations are carried out using LAMMPS (29 Sep 2021) integrated with DeePMD-kit. Details of dpdata and DeePMD-kit installation and execution of can be found in [the DeepModeling official GitHub site](https://github.com/deepmodeling). OVITO is used for the visualization of the MD trajectory.
 
 
-
-The folder structure of this tutorial is like this:
+The files needed for this tutorial are available [here](https://github.com/likefallwind/DPExample/raw/main/CH4.zip). The folder structure of this tutorial is like this:
 
     $ ls
     00.data 01.train 02.lmp
@@ -38,21 +37,21 @@ then execute the following commands:
 
 On the screen, you can see that the OUTCAR file contains 200 frames of data. We randomly pick 40 frames as validation data and the rest as training data. The parameter set\_size specifies the set size. The parameter prec specifies the precision of the floating point number.
 
-	index_validation = np.random.choice(200,size=40,replace=False)
-	index_training = list(set(range(200))-set(index_validation))
-	data_training = data.sub_system(index_training)
-	data_validation = data.sub_system(index_validation)
-	data_training.to_deepmd_npy('00.data/training_data')
-	data_validation.to_deepmd_npy('00.data/validation_data')
-	print('# the training data contains %d frames' % len(data_training)) 
-	print('# the validation data contains %d frames' % len(data_validation)) 
+    index_validation = np.random.choice(200,size=40,replace=False)
+    index_training = list(set(range(200))-set(index_validation))
+    data_training = data.sub_system(index_training)
+    data_validation = data.sub_system(index_validation)
+    data_training.to_deepmd_npy('00.data/training_data')
+    data_validation.to_deepmd_npy('00.data/validation_data')
+    print('# the training data contains %d frames' % len(data_training)) 
+    print('# the validation data contains %d frames' % len(data_validation)) 
 
 The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The data in DeePMD-kit format is stored in the folder 00.data..
 
-	$ ls 00.data/training_data
-	set.000 type.raw type_map.raw
-	$ cat 00.data/training_data/type.raw 
-	H C
+    $ ls 00.data/training_data
+    set.000 type.raw type_map.raw
+    $ cat 00.data/training_data/type.raw 
+    H C
 
 Since all frames in the system have the same atom types and atom numbers, we only need to specify the type information once for the whole system
 
@@ -75,7 +74,7 @@ In the model section, the parameters of embedding and fitting networks are speci
 
     "model":{
         "type_map":    ["H", "C"],                           # the name of each type of atom
-    	"descriptor":{
+        "descriptor":{
             "type":            "se_e2_a",                    # full relative coordinates are used
             "rcut":            6.00,                         # cut-off radius
             "rcut_smth":       0.50,                         # where the smoothing starts
@@ -123,17 +122,17 @@ The training parameters are given in the following
 
         "training" : {
             "training_data": {
-                "systems":            ["../00.data/training_data"],		
+                "systems":            ["../00.data/training_data"],     
                 "batch_size":         "auto",                       
                 "_comment":           "that's all"
             },
             "validation_data":{
                 "systems":            ["../00.data/validation_data/"],
-                "batch_size":         "auto",				
+                "batch_size":         "auto",               
                 "numb_btch":          1,
                 "_comment":           "that's all"
             },
-            "numb_steps":             100000,				            
+            "numb_steps":             100000,                           
             "seed":                   10,
             "disp_file":              "lcurve.out",
             "disp_freq":              1000,
@@ -148,92 +147,92 @@ After the training script is prepared, we can start the training with DeePMD-kit
 
 On the screen, you see the information of the data system(s)
 
-	DEEPMD INFO      ----------------------------------------------------------------------------------------------------
-	DEEPMD INFO      ---Summary of DataSystem: training     -------------------------------------------------------------
-	DEEPMD INFO      found 1 system(s):
-	DEEPMD INFO                              system        natoms        bch_sz        n_bch          prob        pbc
-	DEEPMD INFO           ../00.data/training_data/             5             7           22         1.000          T
-	DEEPMD INFO      -----------------------------------------------------------------------------------------------------
-	DEEPMD INFO      ---Summary of DataSystem: validation   --------------------------------------------------------------
-	DEEPMD INFO      found 1 system(s):
-	DEEPMD INFO                               system       natoms        bch_sz        n_bch          prob        pbc
-	DEEPMD INFO          ../00.data/validation_data/            5             7            5         1.000          T
+    DEEPMD INFO      ----------------------------------------------------------------------------------------------------
+    DEEPMD INFO      ---Summary of DataSystem: training     -------------------------------------------------------------
+    DEEPMD INFO      found 1 system(s):
+    DEEPMD INFO                              system        natoms        bch_sz        n_bch          prob        pbc
+    DEEPMD INFO           ../00.data/training_data/             5             7           22         1.000          T
+    DEEPMD INFO      -----------------------------------------------------------------------------------------------------
+    DEEPMD INFO      ---Summary of DataSystem: validation   --------------------------------------------------------------
+    DEEPMD INFO      found 1 system(s):
+    DEEPMD INFO                               system       natoms        bch_sz        n_bch          prob        pbc
+    DEEPMD INFO          ../00.data/validation_data/            5             7            5         1.000          T
 
 and the starting and final learning rate of this training
 
-	DEEPMD INFO      start training at lr 1.00e-03 (== 1.00e-03), decay_step 5000, decay_rate 0.950006, final lr will be 3.51e-08
+    DEEPMD INFO      start training at lr 1.00e-03 (== 1.00e-03), decay_step 5000, decay_rate 0.950006, final lr will be 3.51e-08
 
 If everything works fine, you will see, on the screen, information printed every 1000 steps, like
 
-	DEEPMD INFO    batch    1000 training time 7.61 s, testing time 0.01 s
-	DEEPMD INFO    batch    2000 training time 6.46 s, testing time 0.01 s
-	DEEPMD INFO    batch    3000 training time 6.50 s, testing time 0.01 s
-	DEEPMD INFO    batch    4000 training time 6.44 s, testing time 0.01 s
-	DEEPMD INFO    batch    5000 training time 6.49 s, testing time 0.01 s
-	DEEPMD INFO    batch    6000 training time 6.46 s, testing time 0.01 s
-	DEEPMD INFO    batch    7000 training time 6.24 s, testing time 0.01 s
-	DEEPMD INFO    batch    8000 training time 6.39 s, testing time 0.01 s
-	DEEPMD INFO    batch    9000 training time 6.72 s, testing time 0.01 s
-	DEEPMD INFO    batch   10000 training time 6.41 s, testing time 0.01 s
-	DEEPMD INFO    saved checkpoint model.ckpt
+    DEEPMD INFO    batch    1000 training time 7.61 s, testing time 0.01 s
+    DEEPMD INFO    batch    2000 training time 6.46 s, testing time 0.01 s
+    DEEPMD INFO    batch    3000 training time 6.50 s, testing time 0.01 s
+    DEEPMD INFO    batch    4000 training time 6.44 s, testing time 0.01 s
+    DEEPMD INFO    batch    5000 training time 6.49 s, testing time 0.01 s
+    DEEPMD INFO    batch    6000 training time 6.46 s, testing time 0.01 s
+    DEEPMD INFO    batch    7000 training time 6.24 s, testing time 0.01 s
+    DEEPMD INFO    batch    8000 training time 6.39 s, testing time 0.01 s
+    DEEPMD INFO    batch    9000 training time 6.72 s, testing time 0.01 s
+    DEEPMD INFO    batch   10000 training time 6.41 s, testing time 0.01 s
+    DEEPMD INFO    saved checkpoint model.ckpt
 
 They present the training and testing time counts. At the end of the 10000th batch, the model is saved in Tensorflow's checkpoint file model.ckpt. At the same time, the training and testing errors are presented in file lcurve.out.
 
-	$ head -n 2 lcurve.out
-	#step       rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
-	0           1.34e+01       1.47e+01         7.05e-01         7.05e-01         4.22e-01         4.65e-01     1.00e-03
+    $ head -n 2 lcurve.out
+    #step       rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
+    0           1.34e+01       1.47e+01         7.05e-01         7.05e-01         4.22e-01         4.65e-01     1.00e-03
 
 and
 
-	$ tail -n 2 lcurve.out
-	999000      1.24e-01       1.12e-01         5.93e-04         8.15e-04         1.22e-01         1.10e-01      3.7e-08
-	1000000     1.31e-01       1.04e-01         3.52e-04         7.74e-04         1.29e-01         1.02e-01      3.5e-08
+    $ tail -n 2 lcurve.out
+    999000      1.24e-01       1.12e-01         5.93e-04         8.15e-04         1.22e-01         1.10e-01      3.7e-08
+    1000000     1.31e-01       1.04e-01         3.52e-04         7.74e-04         1.29e-01         1.02e-01      3.5e-08
 
 Volumes 4, 5 and 6, 7 present energy and force training and testing errors, respectively. It is demonstrated that after 140,000 steps of training, the energy testing error is less than 1 meV and the force testing error is around 120 meV/Å. It is also observed that the force testing error is systematically (but slightly) larger than the training error, which implies a slight over-fitting to the rather small dataset.
 
 When the training process is stopped abnormally, we can restart the training from the provided checkpoint by simply running
 
-	$ dp train  --restart model.ckpt  input.json
+    $ dp train  --restart model.ckpt  input.json
 
 In the lcurve.out, you can see the training and testing errors, like
-	
-	538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
-	538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
-	539000      3.37e-01       2.61e-01         7.08e-04         3.38e-04         1.49e-01         1.15e-01      4.1e-06
-	 #step      rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
-	530000      2.89e-01       2.15e-01         6.36e-04         5.18e-04         1.25e-01         9.31e-02      4.4e-06
-	531000      3.46e-01       3.26e-01         4.62e-04         6.73e-04         1.49e-01         1.41e-01      4.4e-06
+    
+    538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
+    538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
+    539000      3.37e-01       2.61e-01         7.08e-04         3.38e-04         1.49e-01         1.15e-01      4.1e-06
+     #step      rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
+    530000      2.89e-01       2.15e-01         6.36e-04         5.18e-04         1.25e-01         9.31e-02      4.4e-06
+    531000      3.46e-01       3.26e-01         4.62e-04         6.73e-04         1.49e-01         1.41e-01      4.4e-06
 
 Note that input.json needs to be consistent with the previous one.
 
 ### Freeze and Compress a model 
 At the end of the training, the model parameters saved in TensorFlow's checkpoint file should be frozen as a model file that is usually ended with extension .pb. Simply execute
 
-	$ dp freeze -o graph.pb
-	DEEPMD INFO    Restoring parameters from ./model.ckpt-1000000
-	DEEPMD INFO    1264 ops in the final graph
+    $ dp freeze -o graph.pb
+    DEEPMD INFO    Restoring parameters from ./model.ckpt-1000000
+    DEEPMD INFO    1264 ops in the final graph
 
 and it will output a model file named graph.pb in the current directory. 
 The compressed DP model typically speed up DP-based calculations by an order of magnitude faster, and consume an order of magnitude less memory. The graph.pb can be compressed in the following way:
 
-	$ dp compress -i graph.pb -o graph-compress.pb
-	DEEPMD INFO    stage 1: compress the model
-	DEEPMD INFO    built lr
-	DEEPMD INFO    built network
-	DEEPMD INFO    built training
-	DEEPMD INFO    initialize model from scratch
-	DEEPMD INFO    finished compressing
-	DEEPMD INFO    
-	DEEPMD INFO    stage 2: freeze the model
-	DEEPMD INFO    Restoring parameters from model-compression/model.ckpt
-	DEEPMD INFO    840 ops in the final graph
+    $ dp compress -i graph.pb -o graph-compress.pb
+    DEEPMD INFO    stage 1: compress the model
+    DEEPMD INFO    built lr
+    DEEPMD INFO    built network
+    DEEPMD INFO    built training
+    DEEPMD INFO    initialize model from scratch
+    DEEPMD INFO    finished compressing
+    DEEPMD INFO    
+    DEEPMD INFO    stage 2: freeze the model
+    DEEPMD INFO    Restoring parameters from model-compression/model.ckpt
+    DEEPMD INFO    840 ops in the final graph
 
 and it will output a model file named graph-compress.pb.
 
 ### Test a model 
 We can check the quality of the trained model by running
 
-	$ dp test -m graph-compress.pb -s ../00.data/validation_data -n 40 -d results
+    $ dp test -m graph-compress.pb -s ../00.data/validation_data -n 40 -d results
 
 On the screen you see the information of the prediction errors of validation data
 

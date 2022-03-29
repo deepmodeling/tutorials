@@ -31,6 +31,7 @@ Hi everyone, here are the tutorials for DeepModeling Projects.
    :caption: Resources
 
    Resources/index
+   Resources/writingTips.md
 
 .. toctree::
    :maxdepth: 2
