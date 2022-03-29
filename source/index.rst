@@ -10,6 +10,7 @@ Welcome to DeepModeling Tutorial!
 Hi everyone, here are the tutorials for DeepModeling Projects.
 
 
+
 .. toctree::
    :maxdepth: 2
    :numbered:
@@ -40,7 +41,10 @@ Hi everyone, here are the tutorials for DeepModeling Projects.
 
    QA/index
 
+Questions, Discussion and Feedbacks:
+-------------------------------------
 
+The tutorials need feedbacks from you. If you think some tutorials are confused, please write your feedbacks on our [discussion board:](https://github.com/deepmodeling/tutorials/discussions). Please tell us which part of the tutorials make you confused.
 
 
 Working Now:

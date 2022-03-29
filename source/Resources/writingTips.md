@@ -39,7 +39,7 @@ You can learn rst format here: [reStructuredText](https://docutils.sourceforge.i
 
 In short, you can simply change index.rst in your parent directories.
 
-For example, if you put "methane.md" into "/source/CaseStudies/Gas-phase", you can find and change "index.rst" in "source/CaseStudies/". All you should do is imitating such file. I believe you can do it!
+For example, if you put "methane.md" into "/source/CaseStudies/Gas-phase", you can find and change "index.rst" in "source/CaseStudies/Gas-phase". All you should do is imitating such file. I believe you can do it!
 
 
 
