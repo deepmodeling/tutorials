@@ -13,7 +13,7 @@ What? Only three steps? Yes, it's that simple.<!--more-->
 2. ***Training*** is train a Deep Potential model using the DeePMD-kit with data prepared in the previous step. 
 3. Finally, what we need to do is to ***freeze/compress the restart file in the training process into a model***. I believe you can't wait to get started. Let's go!
 
-## 1. Preparing Data
+## Preparing Data
 
 The data format of the DeePMD-kit is introduced in the [official document](https://deepmd.readthedocs.io/) but seems complex. Don't worry, I'd like to introduce a data processing tool: ***dpdata***! You can use only one line Python scripts to process data. So easy!
 
@@ -25,7 +25,7 @@ In this example, we converted the computational results of the VASP in the `OUTC
 
 Suppose you have an "OUTCAR" for molecular dynamics, which contains 1000 frames.`set_size=200` means these 1000 points will be divided into 5 subsets, which is named as `data/set.000`\~`data/set.004`, respectively. The size of each set is 200. In these 5 sets, `data/set.000`\~`data/set.003` will be considered as the training set by the DeePMD-kit, and `data/set.004` will be considered as the test set. The last set will be considered as the test set by the DeePMD-kit by default. If there is only one set, the set will be both the training set and the test set. (Of course, such test set is meaningless.) 
 
-## 2. Training
+## Training
 
 It's required to prepare an input script to start the DeePMD-kit training. Are you still out of the fear of being dominated by INCAR script?  Don't worry, it's much easier to configure the DeePMD-kit than configuring the VASP. First, let's download an `input.json`:
 
@@ -75,7 +75,7 @@ Now we have succesfully set a input file! To start training, we execuate
 
 and wait for results. During the training process, we can see `lcurve.out` to observe the error reduction.Among them, Column 4 and 5 are the test and training errors of energy (normalized by the number of atoms), and Column 6 and 7 are the test and training errors of the force. 
 
-## 3. Freeze/Compress the Model
+## Freeze/Compress the Model
 
 After training, we can use the following script to freeze the model:
 
