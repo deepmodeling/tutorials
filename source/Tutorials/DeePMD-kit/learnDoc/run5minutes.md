@@ -13,8 +13,44 @@ What? Only three steps? Yes, it's that simple.<!--more-->
 2. ***Training*** is train a Deep Potential model using the DeePMD-kit with data prepared in the previous step. 
 3. Finally, what we need to do is to ***freeze/compress the restart file in the training process into a model***. I believe you can't wait to get started. Let's go!
 
+## Tutorial Data
+
+First, let's download and decompress the tutorial data:
+
+```
+    $ wget https://github.com/likefallwind/DPExample/raw/main/DeePMD-kit-FastLearn.tar
+    $ tar xvf DeePMD-kit-FastLearn.tar
+```
+
+If you have trouble connecting github, you can download here:
+```
+    $ wget https://gitee.com/likefallwind/dpexamples/raw/main/DeePMD-kit-FastLearn.tar
+    $ tar xvf DeePMD-kit-FastLearn.tar
+```
+
+Then we can go to the Tutorial data and have a look:
+```
+    $ cd DeePMD-kit-FastLearn
+    $ ls
+    00.data 01.train data
+```
+Three directories are set for different purpose:
+
+* 00.data: contains an example of VASP result `OUTCAR`
+
+* 01.train: contains an example of DeePMD-kit configuration `input.json`
+
+* data: contains an example of DeePMD-kit training/validation data
+
 ## Preparing Data
 
+Now Let's go into 00.data directory:
+```
+    $ cd 00.data
+    $ ls
+    OUTCAR
+```
+This file `OUTCAR` is the computational result of the VASP. We need convert it into DeePMD-kit format.
 The data format of the DeePMD-kit is introduced in the [official document](https://deepmd.readthedocs.io/) but seems complex. Don't worry, I'd like to introduce a data processing tool: ***dpdata***! You can use only one line Python scripts to process data. So easy!
 
        import dpdata
@@ -25,11 +61,22 @@ In this example, we converted the computational results of the VASP in the `OUTC
 
 Suppose you have an "OUTCAR" for molecular dynamics, which contains 1000 frames.`set_size=200` means these 1000 points will be divided into 5 subsets, which is named as `data/set.000`\~`data/set.004`, respectively. The size of each set is 200. In these 5 sets, `data/set.000`\~`data/set.003` will be considered as the training set by the DeePMD-kit, and `data/set.004` will be considered as the test set. The last set will be considered as the test set by the DeePMD-kit by default. If there is only one set, the set will be both the training set and the test set. (Of course, such test set is meaningless.) 
 
+"OUTCAR" we provided only contains 1 frame, so in "data" directory(in the same directory with "OUTCAR") there is only 1 set: `data/set.000`. Some procudure needs to be done if you want to use these data. Detailed method  using dpdata can be found in [next chapter](https://tutorials.deepmodeling.org/en/latest/Tutorials/DeePMD-kit/learnDoc/Handson-Tutorial%28v2.0.3%29.html). 
+
+Now we just skip these details and use the data we prepared for you. The data is in the root directory of our Tutorial data.
+```
+    $ cd ..
+    $ ls
+    00.data 01.train data
+```
+
 ## Training
 
-It's required to prepare an input script to start the DeePMD-kit training. Are you still out of the fear of being dominated by INCAR script?  Don't worry, it's much easier to configure the DeePMD-kit than configuring the VASP. First, let's download an `input.json`:
+It's required to prepare an input script to start the DeePMD-kit training. Are you still out of the fear of being dominated by INCAR script?  Don't worry, it's much easier to configure the DeePMD-kit than configuring the VASP.We have prepared `input.json` for you, you can find it in "01.train" directory:
 
-       wget https://raw.githubusercontent.com/deepmodeling/deepmd-kit/v2.0.3/examples/water/se_e2_a/input.json
+       $ cd 01.train
+       $ ls
+       input.json
 
 The strength of the DeePMD-kit is that the same training parameters are suitable for different systems, so we only need to slightly modify `input.json` to start training. Here is the first parameter to modify:
 
@@ -64,9 +111,9 @@ Here I'd like to introduce the definition of the data system. The DeePMD-kit con
 
 Finnally, we are likely to modify another parameter:
 
-       "stop_batch":   1000000,
+       "numb_steps":   1000,
 
-`stop_batch` is the numebr of training step using the SGD method of deep learning.
+`numb_steps` is the numebr of training step using the SGD method of deep learning.(It is only an example, you should set a larger number in practice)
 
 
 Now we have succesfully set a input file! To start training, we execuate
