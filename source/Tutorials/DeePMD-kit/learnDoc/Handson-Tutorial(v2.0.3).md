@@ -1,15 +1,30 @@
 # Handson-Tutorial(v2.0.3)
-This tutorial will introduce you to the basic usage of the DeePMD-kit, taking a gas phase methane molecule as an example. Typically the DeePMD-kit workflow contains three parts: data preparation, training/freezing/compressing/testing, and molecular dynamics.
+This tutorial will introduce you to the basic usage of the DeePMD-kit, taking a gas phase methane molecule as an example. Typically the DeePMD-kit workflow contains three parts: 
+
+1. Data preparation
+2. Training/Freezing/Compressing/Testing
+3. Molecular dynamics
 
 The DP model is generated using the DeePMD-kit package (v2.0.3). The training data is converted into the format of DeePMD-kit using a tool named dpdata (v0.2.5). It needs to be noted that dpdata only works with Python 3.5 and later versions. The MD simulations are carried out using LAMMPS (29 Sep 2021) integrated with DeePMD-kit. Details of dpdata and DeePMD-kit installation and execution of can be found in [the DeepModeling official GitHub site](https://github.com/deepmodeling). OVITO is used for the visualization of the MD trajectory.
 
 
-The files needed for this tutorial are available [here](https://github.com/likefallwind/DPExample/raw/main/CH4.zip). The folder structure of this tutorial is like this:
+The files needed for this tutorial are available. 
+```
+    $ wget https://dp-public.oss-cn-beijing.aliyuncs.com/community/CH4.tar
+    $ tar xvf CH4.tar
+```
 
+The folder structure of this tutorial is like this:
+
+    $ cd CH4
     $ ls
     00.data 01.train 02.lmp
 
-where the folder 00.data contains the data, the folder 01.train contains an example input script to train a model with DeePMD-kit, and the folder 02.lmp contains LAMMPS example script for molecular dynamics simulation.
+There are 3 folders here:
+
+1. The folder 00.data contains the data
+2. The folder 01.train contains an example input script to train a model with DeePMD-kit
+3. The folder 02.lmp contains LAMMPS example script for molecular dynamics simulation
 
 ## Data preparation
 The training data of the DeePMD-kit contains the atom type, the simulation box, the atom coordinate, the atom force, the system energy, and the virial. A snapshot of a molecular system that has this information is called a frame. A system of data includes many frames that share the same number of atoms and atom types. For example, a molecular dynamics trajectory can be converted into a system of data, with each time step corresponding to a frame in the system.
@@ -20,7 +35,7 @@ We provide a convenient tool named dpdata for converting the data produced by VA
 
 As an example, go to the data folder:
 
-    $ cd data
+    $ cd 00.data
     $ ls 
     OUTCAR
 
@@ -35,30 +50,47 @@ then execute the following commands:
     data = dpdata.LabeledSystem('OUTCAR', fmt = 'vasp/outcar') 
     print('# the data contains %d frames' % len(data))
 
-On the screen, you can see that the OUTCAR file contains 200 frames of data. We randomly pick 40 frames as validation data and the rest as training data. The parameter set\_size specifies the set size. The parameter prec specifies the precision of the floating point number.
+On the screen, you can see that the OUTCAR file contains 200 frames of data. We randomly pick 40 frames as validation data and the rest as training data. 
 
-    index_validation = np.random.choice(200,size=40,replace=False)
-    index_training = list(set(range(200))-set(index_validation))
+    index_validation = np.random.choice(200,size=40,replace=False)     # random choose 40 index for validation_data
+    index_training = list(set(range(200))-set(index_validation))       # other indexes are training_data
     data_training = data.sub_system(index_training)
     data_validation = data.sub_system(index_validation)
-    data_training.to_deepmd_npy('00.data/training_data')
-    data_validation.to_deepmd_npy('00.data/validation_data')
+    data_training.to_deepmd_npy('training_data')               # all training data put into directory:"training_data" 
+    data_validation.to_deepmd_npy('validation_data')           # all validation data put into directory:"validation_data"
     print('# the training data contains %d frames' % len(data_training)) 
     print('# the validation data contains %d frames' % len(data_validation)) 
 
-The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The data in DeePMD-kit format is stored in the folder 00.data..
+The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The data in DeePMD-kit format is stored in the folder 00.data. Lets have a look:
 
-    $ ls 00.data/training_data
+```
+    $ ls 
+    OUTCAR training_data validation_data
+```
+The directories "training_data" and "validation_data" have similar structure, so we just explain "training_data":
+
+    $ ls training_data
     set.000 type.raw type_map.raw
-    $ cat 00.data/training_data/type.raw 
+
+1. set.000: is a directory, contains data in compressed format (numpy compressed arrays). 
+2. type.raw: is a file, contains types of atoms(Represented in integer)
+3. type_map.raw: is a file,  contains type name of atoms.
+
+Lets have a look at `type.raw`:
+```
+    $ cat training_data/type.raw 
+    0 0 0 0 1
+```
+This tells us there are 5 atoms in this example, 4 atoms represented by type "0", and 1 atom represented by type "1".
+Sometimes one needs to map the integer types to atom name. The mapping can be given by the file `type_map.raw`
+
+
+    $ cat training_data/type_map.raw 
     H C
 
-Since all frames in the system have the same atom types and atom numbers, we only need to specify the type information once for the whole system
+This tells us the type "0" is named by "H", and the type "1" is named by "C".
 
-    $ cat 00.data/type_map.raw 
-    0 0 0 0 1
-
-where atom H is given type 0, and atom C is given type 1.
+More detailed doc about Data conversion can be found [here](https://docs.deepmodeling.org/projects/deepmd/en/master/data/data-conv.html)
 
 ## Training
 ### Prepare input script 
