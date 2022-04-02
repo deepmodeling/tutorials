@@ -18,13 +18,7 @@ What? Only three steps? Yes, it's that simple.<!--more-->
 First, let's download and decompress the tutorial data:
 
 ```
-    $ wget https://github.com/likefallwind/DPExample/raw/main/DeePMD-kit-FastLearn.tar
-    $ tar xvf DeePMD-kit-FastLearn.tar
-```
-
-If you have trouble connecting github, you can download here:
-```
-    $ wget https://gitee.com/likefallwind/dpexamples/raw/main/DeePMD-kit-FastLearn.tar
+    $ wget https://dp-public.oss-cn-beijing.aliyuncs.com/community/DeePMD-kit-FastLearn.tar
     $ tar xvf DeePMD-kit-FastLearn.tar
 ```
 
