@@ -94,7 +94,7 @@ In the model section, the parameters of embedding and fitting networks are speci
         "_comment":    "that's all"'
     },
 
-The se\_e2\_a descriptor is used to train the DP model. The item neurons set the size of the embedding and fitting network to [10, 20, 40] and [100, 100, 100], respectively. The components in <img src="https://latex.codecogs.com/svg.image?\tilde{\mathcal{R}}^{i}"> to smoothly go to zero from 0.5 to 6 Å.
+The `se\_e2\_a` descriptor is used to train the DP model. The item neurons set the size of the embedding and fitting network to [10, 20, 40] and [100, 100, 100], respectively. The components in <img src="https://latex.codecogs.com/svg.image?\tilde{\mathcal{R}}^{i}"> to smoothly go to zero from 0.5 to 6 Å.
 
 The following are the parameters that specify the learning rate and loss function.
 
@@ -116,7 +116,7 @@ The following are the parameters that specify the learning rate and loss functio
             "_comment":            "that's all"
     },
 
-In the loss function, pref\_e increases from 0.02 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, and pref\_f decreases from 1000 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\AA^{2}&space;\mathrm{eV}^{-2}"> progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. pref_v is set to 0 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively. The model is trained for <img src="https://latex.codecogs.com/png.image?\dpi{110}10^6"> steps.
+In the loss function, `pref\_e` increases from 0.02 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, and `pref\_f` decreases from 1000 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\AA^{2}&space;\mathrm{eV}^{-2}"> progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. `pref_v` is set to 0 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively. The model is trained for <img src="https://latex.codecogs.com/png.image?\dpi{110}10^6"> steps.
 
 The training parameters are given in the following
 
@@ -176,7 +176,8 @@ If everything works fine, you will see, on the screen, information printed every
     DEEPMD INFO    batch   10000 training time 6.41 s, testing time 0.01 s
     DEEPMD INFO    saved checkpoint model.ckpt
 
-They present the training and testing time counts. At the end of the 10000th batch, the model is saved in Tensorflow's checkpoint file model.ckpt. At the same time, the training and testing errors are presented in file lcurve.out.
+They present the training and testing time counts. At the end of the 10000th batch, the model is saved in Tensorflow's checkpoint file `model.ckpt`. At the same time, the training and testing errors are presented in file `lcurve.out`. 
+The file contains 8 columns, form left to right, are the training step, the validation loss, training loss, root mean square (RMS) validation error of energy, RMS training error of energy, RMS validation error of force, RMS training error of force and the learning rate. The RMS error (RMSE) of the energy is normalized by number of atoms in the system. 
 
     $ head -n 2 lcurve.out
     #step       rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
@@ -190,11 +191,29 @@ and
 
 Volumes 4, 5 and 6, 7 present energy and force training and testing errors, respectively. It is demonstrated that after 140,000 steps of training, the energy testing error is less than 1 meV and the force testing error is around 120 meV/Å. It is also observed that the force testing error is systematically (but slightly) larger than the training error, which implies a slight over-fitting to the rather small dataset.
 
+One can visualize this file by a simple Python script:
+
+```py
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = np.genfromtxt("lcurve.out", names=True)
+for name in data.dtype.names[1:-1]:
+    plt.plot(data['step'], data[name], label=name)
+plt.legend()
+plt.xlabel('Step')
+plt.ylabel('Loss')
+plt.xscale('symlog')
+plt.yscale('log')
+plt.grid()
+plt.show()
+```
+
 When the training process is stopped abnormally, we can restart the training from the provided checkpoint by simply running
 
     $ dp train  --restart model.ckpt  input.json
 
-In the lcurve.out, you can see the training and testing errors, like
+In the `lcurve.out`, you can see the training and testing errors, like
     
     538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
     538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
@@ -203,7 +222,7 @@ In the lcurve.out, you can see the training and testing errors, like
     530000      2.89e-01       2.15e-01         6.36e-04         5.18e-04         1.25e-01         9.31e-02      4.4e-06
     531000      3.46e-01       3.26e-01         4.62e-04         6.73e-04         1.49e-01         1.41e-01      4.4e-06
 
-Note that input.json needs to be consistent with the previous one.
+Note that `input.json` needs to be consistent with the previous one.
 
 ### Freeze and Compress a model 
 At the end of the training, the model parameters saved in TensorFlow's checkpoint file should be frozen as a model file that is usually ended with extension .pb. Simply execute
@@ -212,8 +231,8 @@ At the end of the training, the model parameters saved in TensorFlow's checkpoin
     DEEPMD INFO    Restoring parameters from ./model.ckpt-1000000
     DEEPMD INFO    1264 ops in the final graph
 
-and it will output a model file named graph.pb in the current directory. 
-The compressed DP model typically speed up DP-based calculations by an order of magnitude faster, and consume an order of magnitude less memory. The graph.pb can be compressed in the following way:
+and it will output a model file named `graph.pb` in the current directory. 
+The compressed DP model typically speed up DP-based calculations by an order of magnitude faster, and consume an order of magnitude less memory. The `graph.pb` can be compressed in the following way:
 
     $ dp compress -i graph.pb -o graph-compress.pb
     DEEPMD INFO    stage 1: compress the model
@@ -227,7 +246,7 @@ The compressed DP model typically speed up DP-based calculations by an order of 
     DEEPMD INFO    Restoring parameters from model-compression/model.ckpt
     DEEPMD INFO    840 ops in the final graph
 
-and it will output a model file named graph-compress.pb.
+and it will output a model file named `graph-compress.pb`.
 
 ### Test a model 
 We can check the quality of the trained model by running
@@ -261,12 +280,12 @@ Then we have three files
     $ ls
     conf.lmp  graph-compress.pb  in.lammps
 
-where conf.lmp gives the initial configuration of a gas phase methane MD simulation, and the file in.lammps is the lammps input script. One may check in.lammps and finds that it is a rather standard LAMMPS input file for a MD simulation, with only two exception lines:
+where `conf.lmp` gives the initial configuration of a gas phase methane MD simulation, and the file `in.lammps` is the lammps input script. One may check in.lammps and finds that it is a rather standard LAMMPS input file for a MD simulation, with only two exception lines:
 
     pair_style  graph-compress.pb
     pair_coeff  * *
 
-where the pair style deepmd is invoked and the model file graph-compress.pb is provided, which means the atomic interaction will be computed by the DP model that is stored in the file graph-compress.pb.
+where the pair style deepmd is invoked and the model file `graph-compress.pb` is provided, which means the atomic interaction will be computed by the DP model that is stored in the file graph-compress.pb.
 
 One may execute lammps in the standard way
 
