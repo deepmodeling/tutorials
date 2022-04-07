@@ -60,7 +60,3 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 latex_engine = 'xelatex'
-latex_use_xindy = False
-latex_elements = {
-    'preamble': '\\usepackage[UTF8]{ctex}\n',
-}
