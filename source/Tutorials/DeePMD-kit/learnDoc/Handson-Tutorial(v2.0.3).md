@@ -1,15 +1,30 @@
 # Handson-Tutorial(v2.0.3)
-This tutorial will introduce you to the basic usage of the DeePMD-kit, taking a gas phase methane molecule as an example. Typically the DeePMD-kit workflow contains three parts: data preparation, training/freezing/compressing/testing, and molecular dynamics.
+This tutorial will introduce you to the basic usage of the DeePMD-kit, taking a gas phase methane molecule as an example. Typically the DeePMD-kit workflow contains three parts: 
+
+1. Data preparation
+2. Training/Freezing/Compressing/Testing
+3. Molecular dynamics
 
 The DP model is generated using the DeePMD-kit package (v2.0.3). The training data is converted into the format of DeePMD-kit using a tool named dpdata (v0.2.5). It needs to be noted that dpdata only works with Python 3.5 and later versions. The MD simulations are carried out using LAMMPS (29 Sep 2021) integrated with DeePMD-kit. Details of dpdata and DeePMD-kit installation and execution of can be found in [the DeepModeling official GitHub site](https://github.com/deepmodeling). OVITO is used for the visualization of the MD trajectory.
 
 
-The files needed for this tutorial are available [here](https://github.com/likefallwind/DPExample/raw/main/CH4.zip). The folder structure of this tutorial is like this:
+The files needed for this tutorial are available. 
+```
+    $ wget https://dp-public.oss-cn-beijing.aliyuncs.com/community/CH4.tar
+    $ tar xvf CH4.tar
+```
 
+The folder structure of this tutorial is like this:
+
+    $ cd CH4
     $ ls
     00.data 01.train 02.lmp
 
-where the folder 00.data contains the data, the folder 01.train contains an example input script to train a model with DeePMD-kit, and the folder 02.lmp contains LAMMPS example script for molecular dynamics simulation.
+There are 3 folders here:
+
+1. The folder 00.data contains the data
+2. The folder 01.train contains an example input script to train a model with DeePMD-kit
+3. The folder 02.lmp contains LAMMPS example script for molecular dynamics simulation
 
 ## Data preparation
 The training data of the DeePMD-kit contains the atom type, the simulation box, the atom coordinate, the atom force, the system energy, and the virial. A snapshot of a molecular system that has this information is called a frame. A system of data includes many frames that share the same number of atoms and atom types. For example, a molecular dynamics trajectory can be converted into a system of data, with each time step corresponding to a frame in the system.
@@ -20,7 +35,7 @@ We provide a convenient tool named dpdata for converting the data produced by VA
 
 As an example, go to the data folder:
 
-    $ cd data
+    $ cd 00.data
     $ ls 
     OUTCAR
 
@@ -35,30 +50,47 @@ then execute the following commands:
     data = dpdata.LabeledSystem('OUTCAR', fmt = 'vasp/outcar') 
     print('# the data contains %d frames' % len(data))
 
-On the screen, you can see that the OUTCAR file contains 200 frames of data. We randomly pick 40 frames as validation data and the rest as training data. The parameter set\_size specifies the set size. The parameter prec specifies the precision of the floating point number.
+On the screen, you can see that the OUTCAR file contains 200 frames of data. We randomly pick 40 frames as validation data and the rest as training data. 
 
-    index_validation = np.random.choice(200,size=40,replace=False)
-    index_training = list(set(range(200))-set(index_validation))
+    index_validation = np.random.choice(200,size=40,replace=False)     # random choose 40 index for validation_data
+    index_training = list(set(range(200))-set(index_validation))       # other indexes are training_data
     data_training = data.sub_system(index_training)
     data_validation = data.sub_system(index_validation)
-    data_training.to_deepmd_npy('00.data/training_data')
-    data_validation.to_deepmd_npy('00.data/validation_data')
+    data_training.to_deepmd_npy('training_data')               # all training data put into directory:"training_data" 
+    data_validation.to_deepmd_npy('validation_data')           # all validation data put into directory:"validation_data"
     print('# the training data contains %d frames' % len(data_training)) 
     print('# the validation data contains %d frames' % len(data_validation)) 
 
-The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The data in DeePMD-kit format is stored in the folder 00.data..
+The commands import a system of data from the OUTCAR (with format vasp/outcar ), and then dump it into the compressed format (numpy compressed arrays). The data in DeePMD-kit format is stored in the folder 00.data. Lets have a look:
 
-    $ ls 00.data/training_data
+```
+    $ ls 
+    OUTCAR training_data validation_data
+```
+The directories "training_data" and "validation_data" have similar structure, so we just explain "training_data":
+
+    $ ls training_data
     set.000 type.raw type_map.raw
-    $ cat 00.data/training_data/type.raw 
+
+1. set.000: is a directory, contains data in compressed format (numpy compressed arrays). 
+2. type.raw: is a file, contains types of atoms(Represented in integer)
+3. type_map.raw: is a file,  contains type name of atoms.
+
+Lets have a look at `type.raw`:
+```
+    $ cat training_data/type.raw 
+    0 0 0 0 1
+```
+This tells us there are 5 atoms in this example, 4 atoms represented by type "0", and 1 atom represented by type "1".
+Sometimes one needs to map the integer types to atom name. The mapping can be given by the file `type_map.raw`
+
+
+    $ cat training_data/type_map.raw 
     H C
 
-Since all frames in the system have the same atom types and atom numbers, we only need to specify the type information once for the whole system
+This tells us the type "0" is named by "H", and the type "1" is named by "C".
 
-    $ cat 00.data/type_map.raw 
-    0 0 0 0 1
-
-where atom H is given type 0, and atom C is given type 1.
+More detailed doc about Data conversion can be found [here](https://docs.deepmodeling.org/projects/deepmd/en/master/data/data-conv.html)
 
 ## Training
 ### Prepare input script 
@@ -94,7 +126,7 @@ In the model section, the parameters of embedding and fitting networks are speci
         "_comment":    "that's all"'
     },
 
-The se\_e2\_a descriptor is used to train the DP model. The item neurons set the size of the embedding and fitting network to [10, 20, 40] and [100, 100, 100], respectively. The components in <img src="https://latex.codecogs.com/svg.image?\tilde{\mathcal{R}}^{i}"> to smoothly go to zero from 0.5 to 6 Å.
+The `se\_e2\_a` descriptor is used to train the DP model. The item neurons set the size of the embedding and fitting network to [10, 20, 40] and [100, 100, 100], respectively. The components in <img src="https://latex.codecogs.com/svg.image?\tilde{\mathcal{R}}^{i}"> to smoothly go to zero from 0.5 to 6 Å.
 
 The following are the parameters that specify the learning rate and loss function.
 
@@ -116,7 +148,7 @@ The following are the parameters that specify the learning rate and loss functio
             "_comment":            "that's all"
     },
 
-In the loss function, pref\_e increases from 0.02 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, and pref\_f decreases from 1000 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\AA^{2}&space;\mathrm{eV}^{-2}"> progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. pref_v is set to 0 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively. The model is trained for <img src="https://latex.codecogs.com/png.image?\dpi{110}10^6"> steps.
+In the loss function, `pref\_e` increases from 0.02 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, and `pref\_f` decreases from 1000 to 1 <img src="https://latex.codecogs.com/png.image?\dpi{110}\AA^{2}&space;\mathrm{eV}^{-2}"> progressively, which means that the force term dominates at the beginning, while energy and virial terms become important at the end. This strategy is very effective and reduces the total training time. `pref_v` is set to 0 <img src="https://latex.codecogs.com/png.image?\dpi{110}\mathrm{eV}^{-2}">, indicating that no virial data are included in the training process. The starting learning rate, stop learning rate, and decay steps are set to 0.001, 3.51e-8, and 5000, respectively. The model is trained for <img src="https://latex.codecogs.com/png.image?\dpi{110}10^6"> steps.
 
 The training parameters are given in the following
 
@@ -176,7 +208,8 @@ If everything works fine, you will see, on the screen, information printed every
     DEEPMD INFO    batch   10000 training time 6.41 s, testing time 0.01 s
     DEEPMD INFO    saved checkpoint model.ckpt
 
-They present the training and testing time counts. At the end of the 10000th batch, the model is saved in Tensorflow's checkpoint file model.ckpt. At the same time, the training and testing errors are presented in file lcurve.out.
+They present the training and testing time counts. At the end of the 10000th batch, the model is saved in Tensorflow's checkpoint file `model.ckpt`. At the same time, the training and testing errors are presented in file `lcurve.out`. 
+The file contains 8 columns, form left to right, are the training step, the validation loss, training loss, root mean square (RMS) validation error of energy, RMS training error of energy, RMS validation error of force, RMS training error of force and the learning rate. The RMS error (RMSE) of the energy is normalized by number of atoms in the system. 
 
     $ head -n 2 lcurve.out
     #step       rmse_val       rmse_trn       rmse_e_val       rmse_e_trn       rmse_f_val       rmse_f_trn           lr
@@ -190,11 +223,29 @@ and
 
 Volumes 4, 5 and 6, 7 present energy and force training and testing errors, respectively. It is demonstrated that after 140,000 steps of training, the energy testing error is less than 1 meV and the force testing error is around 120 meV/Å. It is also observed that the force testing error is systematically (but slightly) larger than the training error, which implies a slight over-fitting to the rather small dataset.
 
+One can visualize this file by a simple Python script:
+
+```py
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = np.genfromtxt("lcurve.out", names=True)
+for name in data.dtype.names[1:-1]:
+    plt.plot(data['step'], data[name], label=name)
+plt.legend()
+plt.xlabel('Step')
+plt.ylabel('Loss')
+plt.xscale('symlog')
+plt.yscale('log')
+plt.grid()
+plt.show()
+```
+
 When the training process is stopped abnormally, we can restart the training from the provided checkpoint by simply running
 
     $ dp train  --restart model.ckpt  input.json
 
-In the lcurve.out, you can see the training and testing errors, like
+In the `lcurve.out`, you can see the training and testing errors, like
     
     538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
     538000      3.12e-01       2.16e-01         6.84e-04         7.52e-04         1.38e-01         9.52e-02      4.1e-06
@@ -203,7 +254,7 @@ In the lcurve.out, you can see the training and testing errors, like
     530000      2.89e-01       2.15e-01         6.36e-04         5.18e-04         1.25e-01         9.31e-02      4.4e-06
     531000      3.46e-01       3.26e-01         4.62e-04         6.73e-04         1.49e-01         1.41e-01      4.4e-06
 
-Note that input.json needs to be consistent with the previous one.
+Note that `input.json` needs to be consistent with the previous one.
 
 ### Freeze and Compress a model 
 At the end of the training, the model parameters saved in TensorFlow's checkpoint file should be frozen as a model file that is usually ended with extension .pb. Simply execute
@@ -212,8 +263,8 @@ At the end of the training, the model parameters saved in TensorFlow's checkpoin
     DEEPMD INFO    Restoring parameters from ./model.ckpt-1000000
     DEEPMD INFO    1264 ops in the final graph
 
-and it will output a model file named graph.pb in the current directory. 
-The compressed DP model typically speed up DP-based calculations by an order of magnitude faster, and consume an order of magnitude less memory. The graph.pb can be compressed in the following way:
+and it will output a model file named `graph.pb` in the current directory. 
+The compressed DP model typically speed up DP-based calculations by an order of magnitude faster, and consume an order of magnitude less memory. The `graph.pb` can be compressed in the following way:
 
     $ dp compress -i graph.pb -o graph-compress.pb
     DEEPMD INFO    stage 1: compress the model
@@ -227,7 +278,7 @@ The compressed DP model typically speed up DP-based calculations by an order of 
     DEEPMD INFO    Restoring parameters from model-compression/model.ckpt
     DEEPMD INFO    840 ops in the final graph
 
-and it will output a model file named graph-compress.pb.
+and it will output a model file named `graph-compress.pb`.
 
 ### Test a model 
 We can check the quality of the trained model by running
@@ -261,12 +312,12 @@ Then we have three files
     $ ls
     conf.lmp  graph-compress.pb  in.lammps
 
-where conf.lmp gives the initial configuration of a gas phase methane MD simulation, and the file in.lammps is the lammps input script. One may check in.lammps and finds that it is a rather standard LAMMPS input file for a MD simulation, with only two exception lines:
+where `conf.lmp` gives the initial configuration of a gas phase methane MD simulation, and the file `in.lammps` is the lammps input script. One may check in.lammps and finds that it is a rather standard LAMMPS input file for a MD simulation, with only two exception lines:
 
     pair_style  graph-compress.pb
     pair_coeff  * *
 
-where the pair style deepmd is invoked and the model file graph-compress.pb is provided, which means the atomic interaction will be computed by the DP model that is stored in the file graph-compress.pb.
+where the pair style deepmd is invoked and the model file `graph-compress.pb` is provided, which means the atomic interaction will be computed by the DP model that is stored in the file graph-compress.pb.
 
 One may execute lammps in the standard way
 
