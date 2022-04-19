@@ -24,7 +24,8 @@ Hi everyone, here are the tutorials for DeepModeling Projects.
    :numbered:
    :caption: Case Studies
 
-   caseStudies/Practical-Guidelines-for-DP/index
+
+   CaseStudies/Practical-Guidelines-for-DP/index
    CaseStudies/Gas-phase/index
 
 
