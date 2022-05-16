@@ -15,6 +15,7 @@ After making a successful compromise in calculation parameters, the third goal o
 - for training scheme:
   - In DP, the loss function is:
   $L(p_\epsilon,p_f,p_\xi)=p_\epsilon(\Delta\epsilon)^2+\frac{p_f}{3N}\sum_{i=1}^{N}\sum_{j=1}^{3}(\Delta F_{ij})^2+\frac{p_\xi}{9}\sum_{k=1}^{9}(\Delta \xi_k)^2$
+
 The first, second, and third part are corresponding to energy error, force error, and stress error (Virial error), respectively.
   - The facts are that different labels should physically be self-consistent as expected by the DP model in constructing the PES, and all (three) labels are counted in the loss function. However, three DFT labels are in practice obtained by different numerical methods relying on sophisticated artificial implementations that make their error ranges not self-consistent. Consequently, the accuracy in the focused label (according to the demands of the project) of the DP model could be sacrificed as the price in fitting the other labels with larger noises.
   - To avoid such unwanted cases, users could try adjusting the conservative weights in the loss function according to their needs and **based on the result of the convergence test**
