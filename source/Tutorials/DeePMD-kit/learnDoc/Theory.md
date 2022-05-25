@@ -19,7 +19,7 @@ with <img src="https://latex.codecogs.com/png.image?\dpi{110}E_{i}"> being the l
 
 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;E=\sum_{i}&space;E_{i}=\sum_{i}&space;E\left(\mathcal{R}^{i}\right),(4)">
 
-The mapping of <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}"> to <img src="https://latex.codecogs.com/png.image?\dpi{110}E_{i}"> is constructed in two steps. As seen in [figure](https://gitee.com/liangwenshuo1118/myblog/blob/master/img/descriptor.png),
+The mapping of <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}"> to <img src="https://latex.codecogs.com/png.image?\dpi{110}E_{i}"> is constructed in two steps. As seen in ![figure](https://dp-public.oss-cn-beijing.aliyuncs.com/20220523-143747.png),
 <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}"> is first mapped to a feature matrix, also called the descriptor, <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{D}}^{i}"> to preserve the translational, rotational, and permutational symmetries of the system. <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}&space;\in&space;\mathbb{R}^{N_{i}&space;\times&space;3}"> is first transformed into generalized coordinate <img src="https://latex.codecogs.com/png.image?\dpi{110}\tilde{\boldsymbol{\mathcal{R}}}^{i}&space;\in&space;\mathbb{R}^{N_{i}&space;\times&space;4}">.
 
 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\left\{x_{j&space;i},&space;y_{j&space;i},&space;z_{j&space;i}\right\}&space;\mapsto\left\{s\left(r_{j&space;i}\right),&space;\hat{x}_{j&space;i},&space;\hat{y}_{j&space;i},&space;\hat{z}_{j&space;i}\right\},(5)">
