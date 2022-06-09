@@ -270,7 +270,6 @@ The labeling related keywords are given in the following:
 "fp_pp_path": "./",
 "fp_pp_files": ["POTCAR_H","POTCAR_C"],
 "fp_incar": "./INCAR_methane"
-}
 ```
 
 Description of keywords:
