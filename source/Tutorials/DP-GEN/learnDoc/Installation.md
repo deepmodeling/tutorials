@@ -32,7 +32,7 @@ export PATH=$HOME/.local/bin:$PATH
 
 ## Verify the installation
 
-If the installation is successful, DP-GEN (`dpgen`) will be available to execute.  To test if the installation is successful, you may execute
+If the installation is successful, DP-GEN (`dpgen`) will be available to execute.  To test the installation, you may execute
 
 ```sh
 dpgen -h
