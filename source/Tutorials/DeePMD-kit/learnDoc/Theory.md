@@ -19,8 +19,9 @@ with $E_{i}$ being the local atomic energy of the atom $i$. $E_{i}$ depends on t
 
 $$ E=\sum_{i} E_{i}=\sum_{i} E\left(\mathcal{R}^{i}\right),(4)$$
 
-The mapping of $\boldsymbol{\mathcal{R}}^{i}$ to $E_{i}$ is constructed in two steps. As seen in [figure](https://gitee.com/liangwenshuo1118/myblog/blob/master/img/descriptor.png),
-$\boldsymbol{\mathcal{R}}^{i}$ is first mapped to a feature matrix, also called the descriptor, $\boldsymbol{\mathcal{D}}^{i}$ to preserve the translational, rotational, and permutational symmetries of the system. $\boldsymbol{\mathcal{R}}^{i} \in \mathbb{R}^{N_{i} \times 3}$ is first transformed into generalized coordinate $\tilde{\boldsymbol{\mathcal{R}}}^{i} \in \mathbb{R}^{N_{i} \times 4}$.
+The mapping of <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}"> to <img src="https://latex.codecogs.com/png.image?\dpi{110}E_{i}"> is constructed in two steps. As seen in ![figure](https://dp-public.oss-cn-beijing.aliyuncs.com/20220523-143747.png),
+<img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}"> is first mapped to a feature matrix, also called the descriptor, <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{D}}^{i}"> to preserve the translational, rotational, and permutational symmetries of the system. <img src="https://latex.codecogs.com/png.image?\dpi{110}\boldsymbol{\mathcal{R}}^{i}&space;\in&space;\mathbb{R}^{N_{i}&space;\times&space;3}"> is first transformed into generalized coordinate <img src="https://latex.codecogs.com/png.image?\dpi{110}\tilde{\boldsymbol{\mathcal{R}}}^{i}&space;\in&space;\mathbb{R}^{N_{i}&space;\times&space;4}">.
+
 
 $$ \left\{x_{j i}, y_{j i}, z_{j i}\right\} \mapsto\left\{s\left(r_{j i}\right), \hat{x}_{j i}, \hat{y}_{j i}, \hat{z}_{j i}\right\},(5)$$
 

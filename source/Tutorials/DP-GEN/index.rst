@@ -16,6 +16,8 @@ This tutorial tell you how to use DP-GEN，for detail information, you can check
 .. toctree::
 	:maxdepth: 2
 	:caption: Installation
+	
+	learnDoc/Installation
 
 .. toctree::
 	:maxdepth: 2
