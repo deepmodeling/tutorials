@@ -1,5 +1,5 @@
 
-# Hands-on tutorial for DP-GEN (v0.10.3)
+# Hands-on tutorial for DP-GEN (v0.10.6)
 
 ## Workflow of the DP-GEN
 DeeP Potential GENerator (DP-GEN) is a package that implements a concurrent learning scheme to generate reliable DP models. Typically, the DP-GEN workflow contains three processes: init, run, and autotest. 
@@ -49,7 +49,7 @@ For surface systems, execute
 ```sh
 $ dpgen init_surf param.json machine.json
 ```
-A detailed description for preparing initial data in the standard way can be found at ‘Init’ Section of the [DP-GEN's documentation](https://github.com/deepmodeling/dpgen/blob/master/README.md).
+A detailed description for preparing initial data in the standard way can be found at ‘Init’ Section of the [DP-GEN's documentation](https://docs.deepmodeling.com/projects/dpgen/en/latest/).
 
 **Initial data of this tutorial**
 
