@@ -722,6 +722,16 @@ Prepare the following files in a separate folder.
 │   ├── mp-3034
 ```
 **IMPORTANT!** The ID number, mp-3034, is in the line with Material Project ID for Al-Mg-Cu.
+
+In order to harness the benefits of `pymatgen` combined with Material Project to generate files for calculation tasks by mp-ID automatically, you are supposed to add the API for Material Project in the `.bashrc`.
+
+You can do that easily by running this command.
+```bash
+vim .bashrc
+// add this line into this file, `export MAPI_KEY="your-api-key-for-material-projects"`
+```
+If you have no ideas about api-key for material projects, please refer to this [link](https://materialsproject.org/api#:~:text=API%20Key,-Your%20API%20Key&text=To%20make%20any%20request%20to,anyone%20you%20do%20not%20trust.).
+
 - machine.json is the same with the one used in `init` and `run`. For more information about it, please check this [link](https://bohrium-doc.dp.tech/#/docs/DP-GEN?id=步骤3：准备计算文件).
 - relaxtion.json
 
