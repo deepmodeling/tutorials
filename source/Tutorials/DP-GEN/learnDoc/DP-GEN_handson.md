@@ -706,6 +706,26 @@ The function, `auto-test`, is only for alloy materials to verify the accuracy of
 
 - 05.surf: the surface formation energy.
 
+
+### Simplify
+When you have a dataset containing lots of repeated data, this step will help you simplify your dataset.Since `dpgen simplify` is proformed on a large dataset, only a simple demo will be provided in this part. 
+
+To learn more about simplify, you can refer to [DPGEN's Document](https://docs.deepmodeling.com/projects/dpgen/en/latest/)
+[Document of dpgen simplify parameters](https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify-jdata.html)
+[Document of dpgen simplify machine parameters](https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify-mdata.html)
+
+This demo can be download from dpgen/examples/simplify-MAPbI3-scan-lebesgue. You can find more example in [dpgen.examples](https://github.com/deepmodeling/dpgen/tree/master/examples)
+
+In the example, `data` contains a simplistic data set based on MAPbI3-scan case. Since it has been greatly reduced, do not take it seriously. It is just a demo. 
+`simplify_example` is the work path, which contains `INCAR` and templates for `simplify.json` and `machine.json`. You can use the command `nohup dpgen simplify simplify.json machine.json 1>log 2>err &` here to test if `dpgen simplify` can run normally. 
+
+Kindly reminder: 
+1. `machine.json` is supported by `dpdispatcher 0.4.15`, please check https://docs.deepmodeling.com/projects/dpdispatcher/en/latest/ to update the parameters according to your `dpdispatcher` version.
+2. `POTCAR` should be prepared by the user. 
+3. Please check the path and files name and make sure they are correct. 
+
+Simplify can be used in Transfer Learning, see [CaseStudies: Transfer-learning](../../../CaseStudies/Transfer-learning/index.html)
+=======
 In this part, the Al-Mg-Cu DP potential is used to illustrate how to automatically test DP potential of alloy materials. Each `auto-test` task includes three stages:
 - `make` prepares all required calculation files and input scripts automatically;
 - `run` can help submit calculation tasks to remote calculation plantforms and when calculation tasks are completed, will collect results automatically;
@@ -1019,6 +1039,7 @@ Miller_Indices:         Surf_E(J/m^2) EpA(eV) equi_EpA(eV)
 [0, 0, 1]-task.000059:          1.205      -3.155   -3.327
 [0, 0, 1]-task.000060:          1.188      -3.158   -3.327
 ```
+
 
 ## Summary
 Now, users have learned the basic usage of the DP-GEN.  For further information, please refer to the recommended links.
