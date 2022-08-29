@@ -723,6 +723,8 @@ Kindly reminder:
 2. `POTCAR` should be prepared by the user. 
 3. Please check the path and files name and make sure they are correct. 
 
+Simplify can be used in Transfer Learning, see [CaseStudies: Transfer-learning](../../../CaseStudies/Transfer-learning/index.html)
+
 ## Summary
 Now, users have learned the basic usage of the DP-GEN.  For further information, please refer to the recommended links.
 
