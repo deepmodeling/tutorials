@@ -1,3 +1,4 @@
 myst_parser
 deepmodeling_sphinx >= 0.1.2
 sphinx_rtd_theme
+pygments-lammps
