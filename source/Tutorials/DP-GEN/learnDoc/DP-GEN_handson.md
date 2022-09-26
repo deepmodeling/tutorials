@@ -689,25 +689,7 @@ $ cat cat dpgen.log | grep system
 ```
 It can be found that 3010 structures are generated in `iter.000001`, in which no structure is collected for first-principle calculations. Therefore, the final models are not updated in iter.000002/00.train. 
 
-
-## Auto-test
-
-The function, `auto-test`, is only for alloy materials to verify the accuracy of their DP model, users  can calculate a simple set of properties and compare the results with those of a DFT or traditional empirical force field. DPGEN's autotest module supports the calculation of a variety of properties, such as
-
-- 00.equi:(default task) the equilibrium state；
-
-- 01.eos: the equation of state；
-
-- 02.elastic: the elasticity like Young's module；
-
-- 03.vacancy: the vacancy formation energy；
-
-- 04.interstitial: the interstitial formation energy；
-
-- 05.surf: the surface formation energy.
-
-
-### Simplify
+## Simplify
 When you have a dataset containing lots of repeated data, this step will help you simplify your dataset.Since `dpgen simplify` is proformed on a large dataset, only a simple demo will be provided in this part. 
 
 To learn more about simplify, you can refer to [DPGEN's Document](https://docs.deepmodeling.com/projects/dpgen/en/latest/)
@@ -725,7 +707,23 @@ Kindly reminder:
 3. Please check the path and files name and make sure they are correct. 
 
 Simplify can be used in Transfer Learning, see [CaseStudies: Transfer-learning](../../../CaseStudies/Transfer-learning/index.html)
-=======
+
+## Auto-test
+
+The function, `auto-test`, is only for alloy materials to verify the accuracy of their DP model, users  can calculate a simple set of properties and compare the results with those of a DFT or traditional empirical force field. DPGEN's autotest module supports the calculation of a variety of properties, such as
+
+- 00.equi:(default task) the equilibrium state；
+
+- 01.eos: the equation of state；
+
+- 02.elastic: the elasticity like Young's module；
+
+- 03.vacancy: the vacancy formation energy；
+
+- 04.interstitial: the interstitial formation energy；
+
+- 05.surf: the surface formation energy.
+
 In this part, the Al-Mg-Cu DP potential is used to illustrate how to automatically test DP potential of alloy materials. Each `auto-test` task includes three stages:
 - `make` prepares all required calculation files and input scripts automatically;
 - `run` can help submit calculation tasks to remote calculation plantforms and when calculation tasks are completed, will collect results automatically;
