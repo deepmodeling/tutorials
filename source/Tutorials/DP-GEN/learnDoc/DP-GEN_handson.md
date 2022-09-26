@@ -1,5 +1,5 @@
 
-# Hands-on tutorial for DP-GEN (v0.10.3)
+# Hands-on tutorial for DP-GEN (v0.10.6)
 
 ## Workflow of the DP-GEN
 DeeP Potential GENerator (DP-GEN) is a package that implements a concurrent learning scheme to generate reliable DP models. Typically, the DP-GEN workflow contains three processes: init, run, and autotest. 
@@ -49,7 +49,7 @@ For surface systems, execute
 ```sh
 $ dpgen init_surf param.json machine.json
 ```
-A detailed description for preparing initial data in the standard way can be found at ‘Init’ Section of the [DP-GEN's documentation](https://github.com/deepmodeling/dpgen/blob/master/README.md).
+A detailed description for preparing initial data in the standard way can be found at ‘Init’ Section of the [DP-GEN's documentation](https://docs.deepmodeling.com/projects/dpgen/en/latest/).
 
 **Initial data of this tutorial**
 
@@ -689,10 +689,28 @@ $ cat cat dpgen.log | grep system
 ```
 It can be found that 3010 structures are generated in `iter.000001`, in which no structure is collected for first-principle calculations. Therefore, the final models are not updated in iter.000002/00.train. 
 
+## Simplify
+When you have a dataset containing lots of repeated data, this step will help you simplify your dataset.Since `dpgen simplify` is proformed on a large dataset, only a simple demo will be provided in this part. 
 
-### Auto-test
+To learn more about simplify, you can refer to [DPGEN's Document](https://docs.deepmodeling.com/projects/dpgen/en/latest/)
+[Document of dpgen simplify parameters](https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify-jdata.html)
+[Document of dpgen simplify machine parameters](https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify-mdata.html)
 
-To verify the accuracy of the DP model, users  can calculate a simple set of properties and compare the results with those of a DFT or traditional empirical force field. DPGEN's autotest module supports the calculation of a variety of properties, such as
+This demo can be download from dpgen/examples/simplify-MAPbI3-scan-lebesgue. You can find more example in [dpgen.examples](https://github.com/deepmodeling/dpgen/tree/master/examples)
+
+In the example, `data` contains a simplistic data set based on MAPbI3-scan case. Since it has been greatly reduced, do not take it seriously. It is just a demo. 
+`simplify_example` is the work path, which contains `INCAR` and templates for `simplify.json` and `machine.json`. You can use the command `nohup dpgen simplify simplify.json machine.json 1>log 2>err &` here to test if `dpgen simplify` can run normally. 
+
+Kindly reminder: 
+1. `machine.json` is supported by `dpdispatcher 0.4.15`, please check https://docs.deepmodeling.com/projects/dpdispatcher/en/latest/ to update the parameters according to your `dpdispatcher` version.
+2. `POTCAR` should be prepared by the user. 
+3. Please check the path and files name and make sure they are correct. 
+
+Simplify can be used in Transfer Learning, see [CaseStudies: Transfer-learning](../../../CaseStudies/Transfer-learning/index.html)
+
+## Auto-test
+
+The function, `auto-test`, is only for alloy materials to verify the accuracy of their DP model, users  can calculate a simple set of properties and compare the results with those of a DFT or traditional empirical force field. DPGEN's autotest module supports the calculation of a variety of properties, such as
 
 - 00.equi:(default task) the equilibrium state；
 
@@ -705,6 +723,320 @@ To verify the accuracy of the DP model, users  can calculate a simple set of pro
 - 04.interstitial: the interstitial formation energy；
 
 - 05.surf: the surface formation energy.
+
+In this part, the Al-Mg-Cu DP potential is used to illustrate how to automatically test DP potential of alloy materials. Each `auto-test` task includes three stages:
+- `make` prepares all required calculation files and input scripts automatically;
+- `run` can help submit calculation tasks to remote calculation plantforms and when calculation tasks are completed, will collect results automatically;
+- `post` returns calculation results to local root automatically.
+
+### structure relaxation
+
+#### step1-`make`
+Prepare the following files in a separate folder.
+```sh
+├── machine.json
+├── relaxation.json
+├── confs
+│   ├── mp-3034
+```
+**IMPORTANT!** The ID number, mp-3034, is in the line with Material Project ID for Al-Mg-Cu.
+
+In order to harness the benefits of `pymatgen` combined with Material Project to generate files for calculation tasks by mp-ID automatically, you are supposed to add the API for Material Project in the `.bashrc`.
+
+You can do that easily by running this command.
+```bash
+vim .bashrc
+// add this line into this file, `export MAPI_KEY="your-api-key-for-material-projects"`
+```
+If you have no ideas about api-key for material projects, please refer to this [link](https://materialsproject.org/api#:~:text=API%20Key,-Your%20API%20Key&text=To%20make%20any%20request%20to,anyone%20you%20do%20not%20trust.).
+
+- machine.json is the same with the one used in `init` and `run`. For more information about it, please check this [link](https://bohrium-doc.dp.tech/#/docs/DP-GEN?id=步骤3：准备计算文件).
+- relaxtion.json
+
+```json
+{
+    "structures":         ["confs/mp-3034"],//in this folder, confs/mp-3034, required files and scripts will be generated automatically by `dpgen autotest make relaxation.json`
+    "interaction": {
+            "type":        "deepmd",
+            "model":       "graph.pb",
+            "in_lammps":   "lammps_input/in.lammps",
+            "type_map":   {"Mg":0,"Al": 1,"Cu":2} //if you  calculate other materials, remember to modify element types here.
+    },
+    "relaxation": {
+            "cal_setting":{"etol": 1e-12,
+                           "ftol": 1e-6,
+                           "maxiter": 5000,
+                           "maximal": 500000,
+                           "relax_shape":     true,
+                           "relax_vol":       true}
+    }
+}
+```
+
+Run this command,
+```bash
+dpgen autotest make relaxation.json 
+```
+and then corresponding files and scripts used for calculation will be generated automatically.
+
+#### step2-`run`
+```bash
+nohup dpgen autotest run relaxation.json machine.json &
+```
+After running this command, structures will be relaxed.
+
+#### step3-`post`
+```bash
+dpgen autotest post relaxation.json 
+```
+### property calculation
+#### step1-`make`
+The parameters used for property calculations are in property.json. 
+
+```json
+{
+    "structures":       ["confs/mp-3034"],
+    "interaction": {
+        "type":          "deepmd",
+        "model":         "graph.pb",
+        "deepmd_version":"2.1.0",
+        "type_map":     {"Mg":0,"Al": 1,"Cu":2}
+    },
+    "properties": [
+        {
+         "type":         "eos",
+         "vol_start":    0.9,
+         "vol_end":      1.1,
+         "vol_step":     0.01
+        },
+        {
+         "type":         "elastic",
+         "norm_deform":  2e-2,
+         "shear_deform": 5e-2
+        },
+        {
+         "type":             "vacancy",
+         "supercell":        [3, 3, 3],
+         "start_confs_path": "confs"
+        },
+        {
+         "type":         "interstitial",
+         "supercell":   [3, 3, 3],
+         "insert_ele":  ["Mg","Al","Cu"],
+         "conf_filters":{"min_dist": 1.5},
+         "cal_setting": {"input_prop": "lammps_input/lammps_high"}
+        },
+        {
+         "type":           "surface",
+         "min_slab_size":  10,
+         "min_vacuum_size":11,
+         "max_miller":     2,
+         "cal_type":       "static"
+        }
+        ]
+}
+```
+Run this command
+```bash
+dpgen autotest make property.json
+```
+#### step2-`run`
+Run this command
+```bash
+nohup dpgen autotest run property.json machine.json &
+```
+#### step3-`post`
+```bash
+dpgen autotest post property.json
+```
+In the folder, you can use the command `tree . -L 1` and then you can check results.
+
+```
+(base) ➜ mp-3034 tree . -L 1
+.
+├── dpdispatcher.log
+├── dpgen.log
+├── elastic_00
+├── eos_00
+├── eos_00.bk000
+├── eos_00.bk001
+├── eos_00.bk002
+├── eos_00.bk003
+├── eos_00.bk004
+├── eos_00.bk005
+├── graph_new.pb
+├── interstitial_00
+├── POSCAR
+├── relaxation
+├── surface_00
+└── vacancy_00
+```
+
+- 01.eos: the equation of state；
+```bash
+(base) ➜ mp-3034 tree eos_00 -L 1
+eos_00
+├── 99c07439f6f14399e7785dc783ca5a9047e768a8_flag_if_job_task_fail
+├── 99c07439f6f14399e7785dc783ca5a9047e768a8_job_tag_finished
+├── 99c07439f6f14399e7785dc783ca5a9047e768a8.sub
+├── backup
+├── graph.pb -> ../../../graph.pb
+├── result.json
+├── result.out
+├── run_1660558797.sh
+├── task.000000
+├── task.000001
+├── task.000002
+├── task.000003
+├── task.000004
+├── task.000005
+├── task.000006
+├── task.000007
+├── task.000008
+├── task.000009
+├── task.000010
+├── task.000011
+├── task.000012
+├── task.000013
+├── task.000014
+├── task.000015
+├── task.000016
+├── task.000017
+├── task.000018
+├── task.000019
+└── tmp_log
+```
+
+The `EOS` calculation results are shown in `eos_00/results.out` file
+```bash
+(base) ➜ eos_00 cat result.out 
+conf_dir: /root/1/confs/mp-3034/eos_00
+ VpA(A^3)  EpA(eV)
+ 15.075   -3.2727 
+ 15.242   -3.2838 
+ 15.410   -3.2935 
+ 15.577   -3.3019 
+ 15.745   -3.3090 
+ 15.912   -3.3148 
+ 16.080   -3.3195 
+ 16.247   -3.3230 
+ 16.415   -3.3254 
+ 16.582   -3.3268 
+ 16.750   -3.3273 
+ 16.917   -3.3268 
+ 17.085   -3.3256 
+ 17.252   -3.3236 
+ 17.420   -3.3208 
+ 17.587   -3.3174 
+ 17.755   -3.3134 
+ 17.922   -3.3087 
+ 18.090   -3.3034 
+ 18.257   -3.2977 
+```
+- 02.elastic: the elasticity like Young's module；
+The `elastic` calculation results are shown in `elastic_00/results.out` file
+```bash
+(base) ➜ elastic_00 cat result.out 
+/root/1/confs/mp-3034/elastic_00
+ 124.32   55.52   60.56    0.00    0.00    1.09 
+  55.40  125.82   75.02    0.00    0.00   -0.17 
+  60.41   75.04  132.07    0.00    0.00    7.51 
+   0.00    0.00    0.00   53.17    8.44    0.00 
+   0.00    0.00    0.00    8.34   37.17    0.00 
+   1.06   -1.35    7.51    0.00    0.00   34.43 
+# Bulk   Modulus BV = 84.91 GPa
+# Shear  Modulus GV = 37.69 GPa
+# Youngs Modulus EV = 98.51 GPa
+# Poission Ratio uV = 0.31
+```
+- 03.vacancy: the vacancy formation energy；
+The `vacancy` calculation results are shown in `vacancy_00/results.out` file
+```bash
+(base) ➜ vacancy_00 cat result.out 
+/root/1/confs/mp-3034/vacancy_00
+Structure:      Vac_E(eV)  E(eV) equi_E(eV)
+[3, 3, 3]-task.000000: -10.489  -715.867 -705.378 
+[3, 3, 3]-task.000001:   4.791  -713.896 -718.687 
+[3, 3, 3]-task.000002:   4.623  -714.064 -718.687 
+```
+- 04.interstitial: the interstitial formation energy；
+The `interstitial` calculation results are shown in `interstitial_00/results.out` file
+```bash
+(base) ➜ vacancy_00 cat result.out 
+/root/1/confs/mp-3034/vacancy_00
+Structure:      Vac_E(eV)  E(eV) equi_E(eV)
+[3, 3, 3]-task.000000: -10.489  -715.867 -705.378 
+[3, 3, 3]-task.000001:   4.791  -713.896 -718.687 
+[3, 3, 3]-task.000002:   4.623  -714.064 -718.687 
+```
+- 05.surf: the surface formation energy.
+The `surface` calculation results are shown in `surface_00/results.out` file
+```bash
+(base) ➜ surface_00 cat result.out  
+/root/1/confs/mp-3034/surface_00
+Miller_Indices:         Surf_E(J/m^2) EpA(eV) equi_EpA(eV)
+[1, 1, 1]-task.000000:          1.230      -3.102   -3.327
+[1, 1, 1]-task.000001:          1.148      -3.117   -3.327
+[2, 2, 1]-task.000002:          1.160      -3.120   -3.327
+[2, 2, 1]-task.000003:          1.118      -3.127   -3.327
+[1, 1, 0]-task.000004:          1.066      -3.138   -3.327
+[2, 1, 2]-task.000005:          1.223      -3.118   -3.327
+[2, 1, 2]-task.000006:          1.146      -3.131   -3.327
+[2, 1, 1]-task.000007:          1.204      -3.081   -3.327
+[2, 1, 1]-task.000008:          1.152      -3.092   -3.327
+[2, 1, 1]-task.000009:          1.144      -3.093   -3.327
+[2, 1, 1]-task.000010:          1.147      -3.093   -3.327
+[2, 1, 0]-task.000011:          1.114      -3.103   -3.327
+[2, 1, 0]-task.000012:          1.165      -3.093   -3.327
+[2, 1, 0]-task.000013:          1.137      -3.098   -3.327
+[2, 1, 0]-task.000014:          1.129      -3.100   -3.327
+[1, 0, 1]-task.000015:          1.262      -3.124   -3.327
+[1, 0, 1]-task.000016:          1.135      -3.144   -3.327
+[1, 0, 1]-task.000017:          1.113      -3.148   -3.327
+[1, 0, 1]-task.000018:          1.119      -3.147   -3.327
+[1, 0, 1]-task.000019:          1.193      -3.135   -3.327
+[2, 0, 1]-task.000020:          1.201      -3.089   -3.327
+[2, 0, 1]-task.000021:          1.189      -3.092   -3.327
+[2, 0, 1]-task.000022:          1.175      -3.094   -3.327
+[1, 0, 0]-task.000023:          1.180      -3.100   -3.327
+[1, 0, 0]-task.000024:          1.139      -3.108   -3.327
+[1, 0, 0]-task.000025:          1.278      -3.081   -3.327
+[1, 0, 0]-task.000026:          1.195      -3.097   -3.327
+[2, -1, 2]-task.000027:         1.201      -3.121   -3.327
+[2, -1, 2]-task.000028:         1.121      -3.135   -3.327
+[2, -1, 2]-task.000029:         1.048      -3.147   -3.327
+[2, -1, 2]-task.000030:         1.220      -3.118   -3.327
+[2, -1, 1]-task.000031:         1.047      -3.169   -3.327
+[2, -1, 1]-task.000032:         1.308      -3.130   -3.327
+[2, -1, 1]-task.000033:         1.042      -3.170   -3.327
+[2, -1, 0]-task.000034:         1.212      -3.154   -3.327
+[2, -1, 0]-task.000035:         1.137      -3.165   -3.327
+[2, -1, 0]-task.000036:         0.943      -3.192   -3.327
+[2, -1, 0]-task.000037:         1.278      -3.144   -3.327
+[1, -1, 1]-task.000038:         1.180      -3.118   -3.327
+[1, -1, 1]-task.000039:         1.252      -3.105   -3.327
+[1, -1, 1]-task.000040:         1.111      -3.130   -3.327
+[1, -1, 1]-task.000041:         1.032      -3.144   -3.327
+[1, -1, 1]-task.000042:         1.177      -3.118   -3.327
+[2, -2, 1]-task.000043:         1.130      -3.150   -3.327
+[2, -2, 1]-task.000044:         1.221      -3.135   -3.327
+[2, -2, 1]-task.000045:         1.001      -3.170   -3.327
+[1, -1, 0]-task.000046:         0.911      -3.191   -3.327
+[1, -1, 0]-task.000047:         1.062      -3.168   -3.327
+[1, -1, 0]-task.000048:         1.435      -3.112   -3.327
+[1, -1, 0]-task.000049:         1.233      -3.143   -3.327
+[1, 1, 2]-task.000050:          1.296      -3.066   -3.327
+[1, 1, 2]-task.000051:          1.146      -3.097   -3.327
+[1, 0, 2]-task.000052:          1.192      -3.085   -3.327
+[1, 0, 2]-task.000053:          1.363      -3.050   -3.327
+[1, 0, 2]-task.000054:          0.962      -3.132   -3.327
+[1, -1, 2]-task.000055:         1.288      -3.093   -3.327
+[1, -1, 2]-task.000056:         1.238      -3.102   -3.327
+[1, -1, 2]-task.000057:         1.129      -3.122   -3.327
+[1, -1, 2]-task.000058:         1.170      -3.115   -3.327
+[0, 0, 1]-task.000059:          1.205      -3.155   -3.327
+[0, 0, 1]-task.000060:          1.188      -3.158   -3.327
+```
 
 
 ## Summary
