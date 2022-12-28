@@ -114,7 +114,7 @@ We can perform the run process as we expect by specifying the keywords in param.
  
 - System and data: used to specify the atom types, initial data, etc.
 - Training: mainly used to specify tasks in the training step；
-- Exploration: mainly used to specify tasks in the labeling step；
+- Exploration: mainly used to specify tasks in the Exploration step；
 - Labeling: mainly used to specify tasks in the labeling step.
  
 Here we introduce the main keywords in param.json, taking a gas-phase methane molecule as an example. 
@@ -150,9 +150,7 @@ Description of example:
 
 The system related keys specify the basic information about the system. "type_map" gives the atom types, i.e. "H" and "C". "mass_map" gives the standard atom weights, i.e. "1" and "12". 
 
-The data related keys specify the init data for traning initial DP models and structures used for model_devi calculations. "init_data_prefix" and "init_data_sys" specify the location of the init data. "sys_configs_prefix" and "sys_configs" specify the location of the structures. Here, the init data is provided at "...... /init/CH4.POSCAR.01x01x01/02.md/sys-0004-0001/deepmd". These structures are divided into two groups and provided at "....../init/CH4.POSCAR.01x01x01/01.scale_pert/sys-0004-0001/scale-
-1.000/00000*/POSCAR" and "....../init/CH4.POSCAR.01x01x01/01.scale_pert/sys-0004-0001/scale-
-1.000/00001*/POSCAR".
+The data related keys specify the init data for training initial DP models and structures used for model_devi calculations. "init_data_prefix" and "init_data_sys" specify the location of the init data. "sys_configs_prefix" and "sys_configs" specify the location of the structures. Here, the init data is provided at "...... /init/CH4.POSCAR.01x01x01/02.md/sys-0004-0001/deepmd". These structures are divided into two groups and provided at "....../init/CH4.POSCAR.01x01x01/01.scale_pert/sys-0004-0001/scale-1.000/00000*/POSCAR" and "....../init/CH4.POSCAR.01x01x01/01.scale_pert/sys-0004-0001/scale-1.000/00001*/POSCAR".
 
  **Training**
  
@@ -331,7 +329,7 @@ Description of keywords:
 | &nbsp;&nbsp;&nbsp;&nbsp;"context_type"| str| The connection used to remote machine.|
 | &nbsp;&nbsp;&nbsp;&nbsp;"local_root"  | str| The dir where the tasks and relating files locate.|
 | &nbsp;&nbsp;&nbsp;&nbsp;"remote_root" | str| The dir where the tasks are executed on the remote machine.|
-| "machine"| dict| The definition of resources.|
+| "resource"| dict| The definition of resources.|
 | &nbsp;&nbsp;&nbsp;&nbsp;"number_node" | int| The number of node need for each job.|
 | &nbsp;&nbsp;&nbsp;&nbsp;"cpu_per_node"| int| cpu numbers of each node assigned to each job.|
 | &nbsp;&nbsp;&nbsp;&nbsp;"gpu_per_node"| int| gpu numbers of each node assigned to each job.|
