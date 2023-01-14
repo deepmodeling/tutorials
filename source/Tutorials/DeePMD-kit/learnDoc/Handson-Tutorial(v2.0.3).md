@@ -445,7 +445,7 @@ conf.lmp  graph-compress.pb  in.lammps
 ```
 where `conf.lmp` gives the initial configuration of a gas phase methane MD simulation, and the file `in.lammps` is the LAMMPS input script. One may check in.lammps and finds that it is a rather standard LAMMPS input file for a MD simulation, with only two exception lines:
 ```lammps
-pair_style  graph-compress.pb
+pair_style  deepmd graph-compress.pb
 pair_coeff  * *
 ```
 where the pair style deepmd is invoked and the model file `graph-compress.pb` is provided, which means the atomic interaction will be computed by the DP model that is stored in the file graph-compress.pb.
