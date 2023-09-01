@@ -1,12 +1,12 @@
 
 ===========================
-Mg-Y_alloy
+LiCl_fusant
 ===========================
 
 
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Mg-Y_alloy
+   :maxdepth: 2
+   :caption: LiCl_fusant
 
-   Mg-Y_alloy
+   LiCl_fusant
