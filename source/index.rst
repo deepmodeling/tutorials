@@ -30,7 +30,7 @@ Hi everyone, here are the tutorials for DeepModeling Projects.
    CaseStudies/Gas-phase/index
    CaseStudies/Mg-Y_alloy/index
    CaseStudies/Transfer-learning/index
-   - 6. LiCl-fusant<mark style="color:red;"></mark><a href="https://nb.bohrium.dp.tech/detail/6116401077" target="_blank"><img src="https://cdn.dp.tech/bohrium/web/static/images/open-in-bohrium.svg" alt="Open In Bohrium"/></a>
+   CaseStudies/LiCl-fusant/index
 
 
 
