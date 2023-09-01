@@ -8,6 +8,9 @@ The workflow of the DeePMD-kit contains three parts:
 3. Model application: Use the obtained DP model for MD simulation or model inference.
 
 ## Example: a gas-phase methane molecule
+
+<mark style="color:red;"></mark><a href="https://bohrium.dp.tech/notebook/759614d6c6314dee84a127f11dfc4723" target="_blank"><img src="https://cdn.dp.tech/bohrium/web/static/images/open-in-bohrium.svg" alt="Open In Bohrium"/></a>
+
 The following introduces the basic usage of the DeePMD-kit, taking a gas-phase methane molecule as an example. 
 
 ### Data preparation
