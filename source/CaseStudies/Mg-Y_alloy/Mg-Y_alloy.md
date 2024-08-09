@@ -2661,7 +2661,6 @@ The examplory files are attached: init_bulk param.json, run param.json. machine-
 
     "training" : {
      "systems":          [],
-     "set_prefix":       "set",
      "stop_batch":       600000,
      "batch_size":       1,
 
