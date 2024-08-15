@@ -30,6 +30,8 @@ Hi everyone, here are the tutorials for DeepModeling Projects.
    CaseStudies/Gas-phase/index
    CaseStudies/Mg-Y_alloy/index
    CaseStudies/Transfer-learning/index
+   CaseStudies/LiCl-fusant/index
+
 
 
 .. toctree::
