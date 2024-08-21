@@ -114,7 +114,6 @@ Examplary "simplify.json" of Ag-Au system:
   "_comment": " traing controls",
   "training" : {
             "systems":      [],
-            "set_prefix":   "set",
             "stop_batch":   400000,
             "batch_size":   2,
             "seed":         1,
