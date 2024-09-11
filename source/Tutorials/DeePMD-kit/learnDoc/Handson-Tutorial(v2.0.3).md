@@ -479,4 +479,4 @@ Now, users have learned the basic usage of the DeePMD-kit.  For further informat
 1. GitHub website：https://github.com/deepmodeling/
 2. Documentations：https://docs.deepmodeling.com/
 3. Tutorials：https://tutorials.deepmodeling.com/
-4. Papers：https://deepmodeling.com/blog/papers/deepmd-kit/
+4. Papers：https://blogs.deepmodeling.com/papers/deepmd-kit/
