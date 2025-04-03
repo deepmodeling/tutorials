@@ -43,7 +43,7 @@ The frozen model can be used to run reactive MD simulations to explore the detai
 $ $deepmd_root/bin/lmp -i input.lammps 
 ```
 The `input.lammps` is the input file that controls the MD simulation in detail, technique details can be found in [the manual of LAMMPS](https://docs.lammps.org/). To use the DP, the pair_style option in this input should be specified as follows:
-```
+```lammps
 pair_style deepmd graph_compressed.pb 
 pair_coeff * * 
 ```

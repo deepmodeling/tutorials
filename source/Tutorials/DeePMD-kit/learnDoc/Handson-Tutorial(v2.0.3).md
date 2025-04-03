@@ -435,17 +435,17 @@ Users can use the DP model for MD simulations. Now let's switch to 02.lmp folder
 $ cd ../02.lmp
 ```
 Firstly, we soft-link the output model in the training directory to the current directory
-```
-$ ln -s ../01.train/graph-compress.pb
 ```sh
+$ ln -s ../01.train/graph-compress.pb
+```
 Then we have three files
 ```sh
 $ ls
 conf.lmp  graph-compress.pb  in.lammps
 ```
 where `conf.lmp` gives the initial configuration of a gas phase methane MD simulation, and the file `in.lammps` is the LAMMPS input script. One may check in.lammps and finds that it is a rather standard LAMMPS input file for a MD simulation, with only two exception lines:
-```sh
-pair_style  graph-compress.pb
+```lammps
+pair_style  deepmd graph-compress.pb
 pair_coeff  * *
 ```
 where the pair style deepmd is invoked and the model file `graph-compress.pb` is provided, which means the atomic interaction will be computed by the DP model that is stored in the file graph-compress.pb.
@@ -479,4 +479,4 @@ Now, users have learned the basic usage of the DeePMD-kit.  For further informat
 1. GitHub website：https://github.com/deepmodeling/
 2. Documentations：https://docs.deepmodeling.com/
 3. Tutorials：https://tutorials.deepmodeling.com/
-4. Papers：https://deepmodeling.com/blog/papers/deepmd-kit/
+4. Papers：https://blogs.deepmodeling.com/papers/deepmd-kit/
