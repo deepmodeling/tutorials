@@ -55,7 +55,7 @@ In this example, we converted the computational results of the VASP in the `OUTC
 
 Suppose you have an "OUTCAR" for molecular dynamics, which contains 1000 frames.`set_size=200` means these 1000 points will be divided into 5 subsets, which is named as `data/set.000`\~`data/set.004`, respectively. The size of each set is 200. In these 5 sets, `data/set.000`\~`data/set.003` will be considered as the training set by the DeePMD-kit, and `data/set.004` will be considered as the test set. The last set will be considered as the test set by the DeePMD-kit by default. If there is only one set, the set will be both the training set and the test set. (Of course, such test set is meaningless.) 
 
-"OUTCAR" we provided only contains 1 frame, so in "data" directory(in the same directory with "OUTCAR") there is only 1 set: `data/set.000`. Some procudure needs to be done if you want to use these data. Detailed method  using dpdata can be found in [next chapter](https://tutorials.deepmodeling.org/en/latest/Tutorials/DeePMD-kit/learnDoc/Handson-Tutorial%28v2.0.3%29.html). 
+"OUTCAR" we provided only contains 1 frame, so in "data" directory(in the same directory with "OUTCAR") there is only 1 set: `data/set.000`. Some procudure needs to be done if you want to use these data. Detailed method  using dpdata can be found in [next chapter](https://tutorials.deepmodeling.com/en/latest/Tutorials/DeePMD-kit/learnDoc/Handson-Tutorial%28v2.0.3%29.html). 
 
 Now we just skip these details and use the data we prepared for you. The data is in the root directory of our Tutorial data.
 ```

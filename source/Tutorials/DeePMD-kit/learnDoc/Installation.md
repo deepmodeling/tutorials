@@ -33,20 +33,20 @@ Users can use `conda` to install the DeePMD-kit if their machine can be connecte
 Both the CPU and GPU versions of DeePMD-kit can be installed via conda. Users can create an environment that contains the CPU version of DeePMD-kit and LAMMPS.
 
 ```sh
-(base)$ conda create -n deepmd deepmd-kit=*=*cpu libdeepmd=*=*cpu lammps -c https://conda.deepmodeling.org
+(base)$ conda create -n deepmd deepmd-kit=*=*cpu libdeepmd=*=*cpu lammps -c https://conda.deepmodeling.com
 ```
 
 or create an environment that contains the GPU version of DeePMD-kit and LAMMPS.
 
 ```sh
-(base)$ conda create -n deepmd deepmd-kit=*=*gpu libdeepmd=*=*gpu lammps cudatoolkit=11.3 horovod -c https://conda.deepmodeling.org
+(base)$ conda create -n deepmd deepmd-kit=*=*gpu libdeepmd=*=*gpu lammps cudatoolkit=11.3 horovod -c https://conda.deepmodeling.com
 ```
 
 The environment also contains the [CUDA Toolkit](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#binary-compatibility__table-toolkit-driver). Users could change the CUDA Toolkit version from 10.1 or 11.3.
 The latest version of DeePMD-kit will be installed by the above command. Users may want to specify the DeePMD-kit version such as 2.0.0 using
 
 ```sh
-(base)$ conda create -n deepmd deepmd-kit=2.0.0=*cpu libdeepmd=2.0.0=*cpu lammps horovod -c https://conda.deepmodeling.org
+(base)$ conda create -n deepmd deepmd-kit=2.0.0=*cpu libdeepmd=2.0.0=*cpu lammps horovod -c https://conda.deepmodeling.com
 ```
 
 Before using the DeePMD-kit, users need to ensure that the environment is active. Users can enable the deepmd environment using
@@ -100,4 +100,4 @@ DeePMD-kit: A deep learning package for many-body potential energy representatio
 ...
 ```
 
-Note that users can also install the DeePMD-kit software from the source code, but this process is relatively complex. A detailed description is presented in ['Install from source code'](https://docs.deepmodeling.org/projects/deepmd/en/master/install/install-from-source.html) Section of DeePMD-kit’s documentation.
+Note that users can also install the DeePMD-kit software from the source code, but this process is relatively complex. A detailed description is presented in ['Install from source code'](https://docs.deepmodeling.com/projects/deepmd/en/master/install/install-from-source.html) Section of DeePMD-kit’s documentation.

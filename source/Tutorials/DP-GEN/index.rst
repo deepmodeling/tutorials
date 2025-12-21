@@ -2,7 +2,7 @@
 Using DP-GEN
 ==================
 
-This tutorial tell you how to use DP-GEN，for detail information, you can check `DP-GEN Doc <https://docs.deepmodeling.org/projects/dpgen/en/latest/>`_
+This tutorial tell you how to use DP-GEN，for detail information, you can check `DP-GEN Doc <https://docs.deepmodeling.com/projects/dpgen/en/latest/>`_
 
 
 .. toctree::
