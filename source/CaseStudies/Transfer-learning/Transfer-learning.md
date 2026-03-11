@@ -15,7 +15,7 @@ Transfer learning has several benefits, where the main advantages are saving tra
 
 ## How to implement transfer-learning
 
-This tutorial will introduce how to implement potential energy surface (PES) transfer-learning by using the [DP-GEN](https://github.com/deepmodeling/dpgen) software. In [DP-GEN](https://github.com/deepmodeling/dpgen) (version > 0.8.0), the "simplify" module is designed for this purpose. Suppose that we have completed a typical [DP-GEN](https://github.com/deepmodeling/dpgen) flow, and obtained the DFT dataset and four DP models. The workflow of "simplify" is similar to a typical [DP-GEN](https://github.com/deepmodeling/dpgen) process: iteratively training the DP models with the (re-) labeled data (00.train), picking data according to prediction deviations between different models (01.model_devi), and (re-) labeling the picked data (02.fp). Repeat the iterations until convergence is achieved. Then, the relabeled new dataset that is sufficient to refine the DP model is successfully collected.
+This tutorial introduces one practical workflow to perform potential energy surface (PES) transfer learning (fine-tuning) using the [DP-GEN](https://github.com/deepmodeling/dpgen) software. In [DP-GEN](https://github.com/deepmodeling/dpgen) (version > 0.8.0), the `simplify` module provides an automated loop to (re-)label a subset of an existing dataset and fine-tune models via the `init-model` mode (optionally freezing parts of the network). Note that transfer learning itself can also be done directly in DeePMD-kit by starting from an existing model (`init_model`) and training on a smaller target dataset, without running `dpgen simplify`. Suppose that we have completed a typical [DP-GEN](https://github.com/deepmodeling/dpgen) flow, and obtained the DFT dataset and four DP models. The workflow of `simplify` is similar to a typical [DP-GEN](https://github.com/deepmodeling/dpgen) process: iteratively training the DP models with the (re-)labeled data (00.train), picking data according to prediction deviations between different models (01.model_devi), and (re-)labeling the picked data (02.fp). Repeat the iterations until convergence is achieved. Then, the relabeled new dataset that is sufficient to refine the DP model is successfully collected.
 
 In the "simplify" mode, the first iteration can be viewed as the initialization process in the conventional [DP-GEN](https://github.com/deepmodeling/dpgen) process, where the 00. train and 01. model_devi are skipped, and some data are randomly picked in 02.fp to be relabeled. The goal of relabeling may be using a different functional, using a different pseudopotential, using different parameters to achieve higher precision, *etc*. From the second iteration on:
 
@@ -23,7 +23,7 @@ In the "simplify" mode, the first iteration can be viewed as the initialization 
 - In the exploration step (01. model_devi), the deviations between predictions by the modified models on the original dataset are evaluated. Some of the data points (*e.g.* at most 100) with model deviation exceeding a criterion are randomly selected for relabeling.
 - In the labeling step (02.fp), the selected data points are relabeled, and fed to the new dataset. 
 
-The iterations will stop unit no data is picked up. 
+The iterations will stop once no data is picked up. 
 
 ## Example: Ag-Au
 
